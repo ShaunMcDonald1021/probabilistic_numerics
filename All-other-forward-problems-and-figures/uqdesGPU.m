@@ -67,6 +67,13 @@ C_state_ssmat = QQ(t,t,lambda,sspan(1),sspan(2))/alpha;
 C_cross1_ssmat = QR(t,t,lambda,sspan(1),sspan(2))/alpha;
 kinv = 1/(C_deriv_ssmat(1,1));
 f_diff = kinv*(f-m_deriv_svec(1,:,:));      
+
+%Sadly, MATLAB doesn't support the use of gpuArray's in if statements. This makes convergence checking at each time iteration problematic. The options are:
+%1) pull f_diff off the GPU at every iteration of the loop. The inefficiency of this would defeat the whole purpose of using GPU's in the first place.
+%2) Only gather and check convergence at the last time step (after the loop). This the most efficient option. It should be fine if the convergence errors are NaN's or Inf's, as these would presumably propagate through iterations. The problem is the f_diff >= 1e10 condition: theoretically, nothing is stopping this from happening in an earlier iteration but NOT happening in the final one. In this case, just looking at the last iteration may lead us to falsely conclude convergence. I'm not sure how likely this would be, so we'll go with this option for now.
+%3) Turn f_diff into a 4-D array (where the fourth dimension is N), then gather it at the end of the loop and check convergence at each time step in another loop. This is arguably a good balance between safety and efficiency, but if N is large it may still be too inefficient. It would also entail quite a bit more code modification. If we decide to come back to this, uncomment the line below.
+
+%f_diff = repmat(kinv*(f-m_deriv_svec(1,:,:)),1,1,1,N);
 randnNums  = randn(length(t),M,B);  % generate random numbers outside of loop
 counter = 0;
 
@@ -84,22 +91,26 @@ for n = tinds(1:end-1)'
     uensemble(nextind,:,:) = m_state_svec(nextind,:,:) + sqrt(C_state_ssmat(nextind,nextind))*randnNums(n,:,:);   
     kinv = 1/(C_deriv_ssmat(nextind,nextind)+C_deriv_ssmat(tinds(counter),tinds(counter)));
     f_diff = kinv*(odefn(t(nextind),uensemble(nextind,:,:),theta) - m_deriv_svec(nextind,:,:));
- %   if sum(f_diff >= 1e10 | isnan(f_diff) | isinf(f_diff))>0
-  %      disp('Algorithm failed to converge: try increasing mesh size or changing assumptions')
-   %     uensemble = [];
-    %    logfntime = [];
-     %   m_deriv_svec = [];
-      %  return
+%    if sum(f_diff >= 1e10 | isnan(f_diff) | isinf(f_diff))>0
+ %       disp('Algorithm failed to converge: try increasing mesh size or changing assumptions')
+  %      uensemble = [];
+   %     logfntime = [];
+    %    m_deriv_svec = [];
+    %    return
    % end
 end
 
-if sum(f_diff >= 1e10 | isnan(f_diff) | isinf(f_diff))>0
-        disp('Algorithm failed to converge: try increasing mesh size or changing assumptions')
+%Gather f_diff to check convergence at the last step
+f_diff_gather = gather(f_diff);
+
+%Should there be a condition for f_diff <= -1e10 as well? Large magnitudes in either direction would indicate failure to converge, would they not?
+if sum(f_diff_gather >= 1e10 | isnan(f_diff_gather) | isinf(f_diff_gather))>0
+ disp('Algorithm failed to converge: try increasing mesh size or changing assumptions')
         uensemble = [];
         logfntime = [];
         m_deriv_svec = [];
         return
- end
+end
 
     
 if nargin == 10
