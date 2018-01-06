@@ -47,9 +47,14 @@ figure
 for solveind = 1:length(nsolvesvec)
 subplot(1,length(nsolvesvec), solveind)
 loglog(Nvec, median(logCPUtime(:,:,solveind),1), 'r--o', Nvec, median(logGPUtime(:,:,solveind),1), 'b--o')
+title(strcat("numsolves = ", num2str(nsolvesvec(solveind))));
+xlabel('N')
+ylabel('Computation time (seconds)')
+legend('CPU', 'GPU', 'Location', 'southeast')
 end
 
 saveas(gcf, '~/uqdesShaun/All-other-forward-problems-and-figures/GPUtest1.png')
+
 %A bunch of commented-out stuff from Oksana's original Figure1 code
  %   [ueuler,teuler] = euler(sspan,N,odefn,u0,theta);
  %   truth = odesoln(t,theta);
