@@ -1,9 +1,11 @@
-function [f_diff] ...
+function [uensemble, t, logfntime, m_deriv_svec] ...
     = uqdes(sspan,nsolves,N,kernel,lambda,alpha,odefn,u0,theta,tgrid)
 
-%% uqdes.m 
+%% uqdesGPU.m 
 %
 % DESCRIPTION
+% Modification of the uqdes algorithm to allow for the use of gpuArray's. The original comments are below, along with some of my own. -Shaun
+
 % Bayesian updating algorithm by Oksana A. Chkrebtii last updated
 % May 20, 2016. The probabilistic solver is described int he paper Bayesian
 % Uncertainty Quantification for Differential Equations, by O.A. Chkrebtii,
@@ -117,6 +119,12 @@ if nargin == 10
     randnNums  = randn(length(sinds),M,B);  % generate random numbers outside of loop
     uensemble(sinds,:,:) = m_state_svec(sinds,:,:) + bsxfun(@times,randnNums,sqrt(diag(C_state_ssmat(sinds,sinds))));   
 end
+
+%Gather everything we need off the GPU
+%A more effieicnet approach may be to have this function output gpuArray's, then only gather the stuff we need in each application. However, doing it this way allows us to assess the "worst-case" speed of GPU usage
+uensemble = gather(uensemble);
+t = gather(t);
+m_deriv_svec = gather(m_deriv_svec);
 
 logfntime = log(toc); % end timer
 
