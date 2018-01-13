@@ -6,16 +6,16 @@ u0 = [-1 0]; sspan = [0 10]; theta = 2;
 odefn = @simpleode; odesoln = @simpleode_solution;
 nsolves = 100; kernel = 'uniform';  % sqexp or uniform
 %Nvec = [25,50,100];
-Nvec = [25];
+Nvec = [50];
 
-figure
-state = 2;
+%figure
+%state = 2;
 for nind = 1:length(Nvec)
-    subaxis(1,length(Nvec),nind) % you may also use subplot here
+%    subaxis(1,length(Nvec),nind) % you may also use subplot here
     N = Nvec(nind);
     ds = range(sspan)/(N-1);
     lambda = 1*ds; alpha = N/100;
-    [C_deriv_ssmat, C_state_ssmat, C_cross1_ssmat,kinv] = uqdesSparse(sspan,nsolves,N,kernel,lambda,alpha,odefn,u0,theta);
+    [C_deriv_ssmat, C_state_ssmat, C_cross1_ssmat,kinv, f_diff] = uqdesSparse(sspan,nsolves,N,kernel,lambda,alpha,odefn,u0,theta);
 %     [ueuler,teuler] = euler(sspan,N,odefn,u0,theta);
 %     truth = odesoln(t,theta);
 %     truth = truth(1:2,:)';

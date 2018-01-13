@@ -1,4 +1,4 @@
-function [C_deriv_ssmat, C_state_ssmat, C_cross1_ssmat,kinv] ...
+function [C_deriv_ssmat, C_state_ssmat, C_cross1_ssmat,kinv, f_diff] ...
     = uqdes(sspan,nsolves,N,kernel,lambda,alpha,odefn,u0,theta,tgrid)
 
 %% uqdes.m 
@@ -71,32 +71,34 @@ randnNums  = randn(length(t),M,B);  % generate random numbers outside of loop
 counter = 0;
 
 % run one-step uqdes algorithm
-% for n = tinds(1:end-1)'
-%     ind = tinds(max(counter+1,max(1,counter-trim)):min(end,min(end,counter+trim)));
-% 	endind = vertcat(tinds(counter+1:N),sinds);
-%     counter = counter + 1;
-%     nextind = tinds(counter+1);
-%     m_state_svec(endind,:,:) = m_state_svec(endind,:,:) + bsxfun(@times,C_cross1_ssmat(endind,n),f_diff(1,:,:));
-%     m_deriv_svec(ind,:,:) = m_deriv_svec(ind,:,:) + bsxfun(@times,C_deriv_ssmat(ind,n),f_diff(1,:,:));
-%     C_state_ssmat(endind,endind) = C_state_ssmat(endind,endind) - kinv*C_cross1_ssmat(endind,n)*(C_cross1_ssmat(endind,n))';
-%     C_cross1_ssmat(endind,ind) = C_cross1_ssmat(endind,ind) - kinv*C_cross1_ssmat(endind,n)*C_deriv_ssmat(n,ind);
-%     C_deriv_ssmat(ind,ind) = C_deriv_ssmat(ind,ind) - kinv*C_deriv_ssmat(ind,n)*C_deriv_ssmat(n,ind);
-%     uensemble(nextind,:,:) = m_state_svec(nextind,:,:) + sqrt(C_state_ssmat(nextind,nextind))*randnNums(n,:,:);   
-%     kinv = 1/(C_deriv_ssmat(nextind,nextind)+C_deriv_ssmat(tinds(counter),tinds(counter)));
-%     f_diff = kinv*(odefn(t(nextind),uensemble(nextind,:,:),theta) - m_deriv_svec(nextind,:,:));
-%     if sum(f_diff >= 1e10 | isnan(f_diff) | isinf(f_diff))>0
-%         disp('Algorithm failed to converge: try increasing mesh size or changing assumptions')
-%         uensemble = [];
-%         logfntime = [];
-%         m_deriv_svec = [];
-%         return
-%     end
-% end
+ for n = tinds(1:end-1)'
+
+     ind = tinds(max(counter+1,max(1,counter-trim)):min(end,min(end,counter+trim)));
+ 	endind = vertcat(tinds(counter+1:N),sinds);
+     counter = counter + 1
+    nextind = tinds(counter+1);
+     m_state_svec(endind,:,:) = m_state_svec(endind,:,:) + bsxfun(@times,full(C_cross1_ssmat(endind,n)),f_diff(1,:,:));
+     m_deriv_svec(ind,:,:) = m_deriv_svec(ind,:,:) + bsxfun(@times,full(C_deriv_ssmat(ind,n)),f_diff(1,:,:));
+    C_state_ssmat(endind,endind) = C_state_ssmat(endind,endind) - kinv*C_cross1_ssmat(endind,n)*(C_cross1_ssmat(endind,n))';
+     C_cross1_ssmat(endind,ind) = C_cross1_ssmat(endind,ind) - kinv*C_cross1_ssmat(endind,n)*C_deriv_ssmat(n,ind);
+     C_deriv_ssmat(ind,ind) = C_deriv_ssmat(ind,ind) - kinv*C_deriv_ssmat(ind,n)*C_deriv_ssmat(n,ind);
+     uensemble(nextind,:,:) = m_state_svec(nextind,:,:) + full(sqrt(C_state_ssmat(nextind,nextind)))*randnNums(n,:,:);   
+     kinv = 1/(C_deriv_ssmat(nextind,nextind)+C_deriv_ssmat(tinds(counter),tinds(counter)));
+    f_diff = kinv*(odefn(t(nextind),uensemble(nextind,:,:),theta) - m_deriv_svec(nextind,:,:));
+     if sum(f_diff >= 1e10 | isnan(f_diff) | isinf(f_diff))>0
+         disp('Algorithm failed to converge: try increasing mesh size or changing assumptions')
+         uensemble = [];
+         logfntime = [];
+         m_deriv_svec = [];
+         return
+     end
+end
     
-% if nargin == 10
-%     randnNums  = randn(length(sinds),M,B);  % generate random numbers outside of loop
-%     uensemble(sinds,:,:) = m_state_svec(sinds,:,:) + bsxfun(@times,randnNums,sqrt(diag(C_state_ssmat(sinds,sinds))));   
-% end
+ if nargin == 10
+     randnNums  = randn(length(sinds),M,B);  % generate random numbers outside of loop
+     uensemble(sinds,:,:) = m_state_svec(sinds,:,:) + bsxfun(@times,randnNums,sqrt(diag(full(C_state_ssmat(sinds,sinds)))));   
+
+ end
 
 % logfntime = log(toc); % end timer
 

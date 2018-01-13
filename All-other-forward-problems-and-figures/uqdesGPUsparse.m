@@ -1,10 +1,10 @@
 function [uensemble, t, logfntime, m_deriv_svec] ...
     = uqdes(sspan,nsolves,N,kernel,lambda,alpha,odefn,u0,theta,tgrid)
 
-%% uqdesGPU.m 
+%% uqdesGPUsparse.m 
 %
 % DESCRIPTION
-% Modification of the uqdes algorithm to allow for the use of gpuArray's. The original comments are below, along with some of my own. -Shaun
+% Modification of the uqdes algorithm to allow for the use of SPARSE gpuArray's. The original comments are below, along with some of my own. -Shaun
 
 % Bayesian updating algorithm by Oksana A. Chkrebtii last updated
 % May 20, 2016. The probabilistic solver is described int he paper Bayesian
@@ -87,18 +87,18 @@ for n = tinds(1:end-1)'
     nextind = tinds(counter+1);
     m_state_svec(endind,:,:) = m_state_svec(endind,:,:) + bsxfun(@times,C_cross1_ssmat(endind,n),f_diff(1,:,:));
     m_deriv_svec(ind,:,:) = m_deriv_svec(ind,:,:) + bsxfun(@times,C_deriv_ssmat(ind,n),f_diff(1,:,:));
-    C_state_ssmat(endind,endind) = C_state_ssmat(endind,endind) - kinv*C_cross1_ssmat(endind,n)*(C_cross1_ssmat(endind,n))';
-    C_cross1_ssmat(endind,ind) = C_cross1_ssmat(endind,ind) - kinv*C_cross1_ssmat(endind,n)*C_deriv_ssmat(n,ind);
-    C_deriv_ssmat(ind,ind) = C_deriv_ssmat(ind,ind) - kinv*C_deriv_ssmat(ind,n)*C_deriv_ssmat(n,ind);
-    uensemble(nextind,:,:) = m_state_svec(nextind,:,:) + sqrt(C_state_ssmat(nextind,nextind))*randnNums(n,:,:);   
+   C_state_ssmat(endind,endind) = full(sparse(C_state_ssmat(endind,endind)) - kinv*sparse(C_cross1_ssmat(endind,n))*sparse(C_cross1_ssmat(endind,n)'));
+   C_cross1_ssmat(endind,ind) = full(sparse(C_cross1_ssmat(endind,ind)) - kinv*sparse(C_cross1_ssmat(endind,n))*sparse(C_deriv_ssmat(n,ind)));
+   C_deriv_ssmat(ind,ind) = full(sparse(C_deriv_ssmat(ind,ind)) - kinv*sparse(C_deriv_ssmat(ind,n))*sparse(C_deriv_ssmat(n,ind)));
+   uensemble(nextind,:,:) = m_state_svec(nextind,:,:) + sqrt(C_state_ssmat(nextind,nextind))*randnNums(n,:,:);   
     kinv = 1/(C_deriv_ssmat(nextind,nextind)+C_deriv_ssmat(tinds(counter),tinds(counter)));
     f_diff = kinv*(odefn(t(nextind),uensemble(nextind,:,:),theta) - m_deriv_svec(nextind,:,:));
-%    if sum(f_diff >= 1e10 | isnan(f_diff) | isinf(f_diff))>0
- %       disp('Algorithm failed to converge: try increasing mesh size or changing assumptions')
-  %      uensemble = [];
-   %     logfntime = [];
-    %    m_deriv_svec = [];
-    %    return
+  %if sum(f_diff >= 1e10 | isnan(f_diff) | isinf(f_diff))>0
+   %     disp('Algorithm failed to converge: try increasing mesh size or changing assumptions')
+    %    uensemble = [];
+    %   logfntime = [];
+    %   m_deriv_svec = [];
+     %   return
    % end
 end
 
