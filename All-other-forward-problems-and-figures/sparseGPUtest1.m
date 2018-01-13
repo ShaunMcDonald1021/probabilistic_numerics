@@ -48,7 +48,7 @@ end
 %Plot results
 figure
 for solveind = 1:length(nsolvesvec)
-subplot(1,length(nsolvesvec), solveind)
+subplot(2,2, solveind)
 loglog(Nvec, median(logCPUtime(:,:,solveind),1), 'r--o', Nvec, median(logGPUtime(:,:,solveind),1), 'b--o', Nvec, median(logGPUsparsetime(:,:,solveind),1), 'g--o')
 title(strcat("numsolves = ", num2str(nsolvesvec(solveind))));
 xlabel('N')
