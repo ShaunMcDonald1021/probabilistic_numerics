@@ -4,12 +4,13 @@
 
 clear all; close all; clc;
 
-num_iter = 3; %number of iterations
-u0 = [-1 0]; sspan = [0 10]; sspanGPU = gpuArray(sspan); theta = 2; thetaGPU = gpuArray(theta);
+
+num_iter = 1; %number of iterations
+u0 = [-1 0]; u0GPU = gpuArray(u0); sspan = [0 10]; sspanGPU = gpuArray(sspan); theta = 2; thetaGPU = gpuArray(theta);
 odefn = @simpleode; odesoln = @simpleode_solution;
-nsolvesvec = [50 100 200 500]; kernel = 'uniform';  % sqexp or uniform
-%Nvec = [50 100 200 500 1000 2000 5000 10000];
-Nvec = [25 50 100];
+nsolvesvec = [100]; kernel = 'uniform';  % sqexp or uniform
+%Nvec = [50 100 200 500 1000 2000 5000 10000 20000];
+Nvec = [1000];
 logCPUtime = zeros(num_iter, length(Nvec), length(nsolvesvec));
 logGPUtime = zeros(num_iter, length(Nvec), length(nsolvesvec)); 
 logGPUsparsetime = zeros(num_iter, length(Nvec), length(nsolvesvec));
@@ -17,28 +18,31 @@ logGPUsparsetime = zeros(num_iter, length(Nvec), length(nsolvesvec));
 %figure
 state = 2;
 for iterind = 1:num_iter
-u0 = [unifrnd(-5, 5), unifrnd(-5, 5)]; u0GPU = gpuArray(u0);
-
+%u0 = [unifrnd(-5, 5), unifrnd(-5, 5)]; u0GPU = gpuArray(u0);
 for nind = 1:length(Nvec)
  %   subaxis(1,length(Nvec),nind) % you may also use subplot here
    N = Nvec(nind);
    ds = range(sspan)/(N-1);
-  lambda = 1*ds; alpha = N/100;
+  lambda = 0.5*ds; alpha = N/100;
 
 for solveind = 1:length(nsolvesvec)
-nsolves = nsolvesvec(nind);
+tic
+nsolves = nsolvesvec(solveind);
 
 %We're not really interested in the actual results here. Prelminary experiements
 %showed that the GPU should be consistent with the CPU. Only time matters here.
-    [~,~,logCPUtime(iterind, nind, solveind),~]  = uqdes(sspan,nsolves,N,kernel,lambda,alpha,odefn,u0,theta);
+   % [~,~,logCPUtime(iterind, nind, solveind),~]  = uqdes(sspan,nsolves,N,kernel,lambda,alpha,odefn,u0,theta);
 
-[~,~,logGPUtime(iterind, nind, solveind),~] = uqdesGPU(sspanGPU, nsolves, N, kernel, lambda, alpha, odefn, u0GPU, thetaGPU);
+%[~,~,logGPUtime(iterind, nind, solveind),~] = uqdesGPU(sspanGPU, nsolves, N, kernel, lambda, alpha, odefn, u0GPU, thetaGPU);
 
-[~,~, logGPUsparsetime(iterind, nind, solveind), ~] = uqdesGPUsparse(sspanGPU, nsolves, N, kernel, lambda, alpha, odefn, u0GPU, thetaGPU);
+[C_deriv_ssmat, C_state_ssmat, C_cross1_ssmat] = uqdesGPUsparse(sspanGPU, nsolves, N, kernel, lambda, alpha, odefn, u0GPU, thetaGPU);
 
 %The very first run of both uqdes and uqdesGPU is always slower.
 %This can't be the initalization overhead, because we start measuring time inside the functions.
 %What is the system doing differently on the first iteration?
+
+%disp(strcat("N = ", num2str(N), ", nsolves = ", num2str(nsolves), ", iteration ", num2str(iterind), " took ", num2str(toc), " seconds."))
+
 
 
 end
@@ -46,17 +50,17 @@ end
 end
 
 %Plot results
-figure
-for solveind = 1:length(nsolvesvec)
-subplot(2,2, solveind)
-loglog(Nvec, median(logCPUtime(:,:,solveind),1), 'r--o', Nvec, median(logGPUtime(:,:,solveind),1), 'b--o', Nvec, median(logGPUsparsetime(:,:,solveind),1), 'g--o')
-title(strcat("numsolves = ", num2str(nsolvesvec(solveind))));
-xlabel('N')
-ylabel('Computation time (seconds)')
-legend('CPU', 'GPU', 'GPU w/sparsity', 'Location', 'southeast')
-end
+%figure
+%for solveind = 1:length(nsolvesvec)
+%subplot(2,2, solveind)
+%loglog(Nvec, median(logCPUtime(:,:,solveind),1), 'r--o', Nvec, median(logGPUtime(:,:,solveind),1), 'b--o', Nvec, median(logGPUsparsetime(:,:,solveind),1), 'g--o')
+%title(strcat("numsolves = ", num2str(nsolvesvec(solveind))));
+%xlabel('N')
+%ylabel('Computation time (seconds)')
+%legend('CPU', 'GPU', 'GPU w/sparsity', 'Location', 'southeast')
+%end
 
-saveas(gcf, '~/uqdesShaun/All-other-forward-problems-and-figures/sparseGPUtest1.png')
+%saveas(gcf, '~/uqdesShaun/All-other-forward-problems-and-figures/sparseGPUtest1.png')
 
 %A bunch of commented-out stuff from Oksana's original Figure1 code
  %   [ueuler,teuler] = euler(sspan,N,odefn,u0,theta);
@@ -80,3 +84,4 @@ saveas(gcf, '~/uqdesShaun/All-other-forward-problems-and-figures/sparseGPUtest1.
   %  box off
     %legend([eu,p,tr],'euler','uqdes','true')
 
+%exit

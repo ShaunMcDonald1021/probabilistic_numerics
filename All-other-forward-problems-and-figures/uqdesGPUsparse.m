@@ -1,4 +1,4 @@
-function [uensemble, t, logfntime, m_deriv_svec] ...
+function [C_deriv_ssmat, C_state_ssmat, C_cross1_ssmat] ...
     = uqdes(sspan,nsolves,N,kernel,lambda,alpha,odefn,u0,theta,tgrid)
 
 %% uqdesGPUsparse.m 
@@ -81,24 +81,24 @@ counter = 0;
 
 % run one-step uqdes algorithm
 for n = tinds(1:end-1)'
-    ind = tinds(max(counter+1,max(1,counter-trim)):min(end,min(end,counter+trim)));
-	endind = vertcat(tinds(counter+1:N),sinds);
-    counter = counter + 1;
-    nextind = tinds(counter+1);
-    m_state_svec(endind,:,:) = m_state_svec(endind,:,:) + bsxfun(@times,C_cross1_ssmat(endind,n),f_diff(1,:,:));
-    m_deriv_svec(ind,:,:) = m_deriv_svec(ind,:,:) + bsxfun(@times,C_deriv_ssmat(ind,n),f_diff(1,:,:));
-   C_state_ssmat(endind,endind) = full(sparse(C_state_ssmat(endind,endind)) - kinv*sparse(C_cross1_ssmat(endind,n))*sparse(C_cross1_ssmat(endind,n)'));
-   C_cross1_ssmat(endind,ind) = full(sparse(C_cross1_ssmat(endind,ind)) - kinv*sparse(C_cross1_ssmat(endind,n))*sparse(C_deriv_ssmat(n,ind)));
-   C_deriv_ssmat(ind,ind) = full(sparse(C_deriv_ssmat(ind,ind)) - kinv*sparse(C_deriv_ssmat(ind,n))*sparse(C_deriv_ssmat(n,ind)));
+    ind = tinds(max(counter+1,max(1,counter-trim)):min(end,min(end,counter+trim)))
+   endind = vertcat(tinds(counter+1:N),sinds);
+   counter = counter + 1;
+   nextind = tinds(counter+1);
+   m_state_svec(endind,:,:) = m_state_svec(endind,:,:) + bsxfun(@times,C_cross1_ssmat(endind,n),f_diff(1,:,:));
+   m_deriv_svec(ind,:,:) = m_deriv_svec(ind,:,:) + bsxfun(@times,C_deriv_ssmat(ind,n),f_diff(1,:,:));
+  C_state_ssmat(endind,endind) = C_state_ssmat(endind,endind) - kinv*C_cross1_ssmat(endind,n)*C_cross1_ssmat(endind,n)';
+   C_cross1_ssmat(endind,ind) = C_cross1_ssmat(endind,ind) - kinv*C_cross1_ssmat(endind,n)*C_deriv_ssmat(n,ind);
+   C_deriv_ssmat(ind,ind) = C_deriv_ssmat(ind,ind) - kinv*C_deriv_ssmat(ind,n)*C_deriv_ssmat(n,ind);
    uensemble(nextind,:,:) = m_state_svec(nextind,:,:) + sqrt(C_state_ssmat(nextind,nextind))*randnNums(n,:,:);   
     kinv = 1/(C_deriv_ssmat(nextind,nextind)+C_deriv_ssmat(tinds(counter),tinds(counter)));
-    f_diff = kinv*(odefn(t(nextind),uensemble(nextind,:,:),theta) - m_deriv_svec(nextind,:,:));
-  %if sum(f_diff >= 1e10 | isnan(f_diff) | isinf(f_diff))>0
-   %     disp('Algorithm failed to converge: try increasing mesh size or changing assumptions')
-    %    uensemble = [];
-    %   logfntime = [];
+   f_diff = kinv*(odefn(t(nextind),uensemble(nextind,:,:),theta) - m_deriv_svec(nextind,:,:));
+%  if sum(f_diff >= 1e10 | isnan(f_diff) | isinf(f_diff))>0
+ %       disp('Algorithm failed to converge: try increasing mesh size or changing assumptions')
+  %      uensemble = [];
+   %    logfntime = [];
     %   m_deriv_svec = [];
-     %   return
+   %     return
    % end
 end
 
@@ -111,7 +111,7 @@ if sum(f_diff_gather >= 1e10 | isnan(f_diff_gather) | isinf(f_diff_gather))>0
         uensemble = [];
         logfntime = [];
         m_deriv_svec = [];
-        return
+       return
 end
 
     
@@ -121,7 +121,7 @@ if nargin == 10
 end
 
 %Gather everything we need off the GPU
-%A more effieicnet approach may be to have this function output gpuArray's, then only gather the stuff we need in each application. However, doing it this way allows us to assess the "worst-case" speed of GPU usage
+%A more efficient approach may be to have this function output gpuArray's, then only gather the stuff we need in each application. However, doing it this way allows us to assess the "worst-case" speed of GPU usage
 uensemble = gather(uensemble);
 t = gather(t);
 m_deriv_svec = gather(m_deriv_svec);
