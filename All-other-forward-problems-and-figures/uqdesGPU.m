@@ -126,6 +126,7 @@ uensemble = gather(uensemble);
 t = gather(t);
 m_deriv_svec = gather(m_deriv_svec);
 
+wait(gpuDevice)
 logfntime = log(toc); % end timer
 
 
