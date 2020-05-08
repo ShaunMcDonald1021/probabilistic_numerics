@@ -1,2 +1,8 @@
 *.mat
 *.asv
+uqdes
+Laplace_Approximation/Charlie_work
+*.tex
+*synctex*
+*.log
+*.aux
