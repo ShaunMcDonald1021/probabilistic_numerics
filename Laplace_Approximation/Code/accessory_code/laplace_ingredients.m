@@ -1,5 +1,5 @@
 function [mode, f_sym, f_at_mode, hess_at_mode, args] =...
-    laplace_ingredients(f, d)
+    laplace_ingredients(f, d, should_prompt)
 
 % Uses symbolic toolkit to produce necessary ingredients for Laplace
 % approximation of a function.
@@ -9,6 +9,9 @@ function [mode, f_sym, f_at_mode, hess_at_mode, args] =...
 % It must take a single array-valued argument: a vertical concatenation
 % of d-dimensional row vectors.
 % d: dimension of the domain.
+% should_prompt: logical indicating whether or not to prompt the user to
+% input f_sym themselves. This may be a good idea in some applications (see
+% below), but should be turned off for the interactive apps.
 
 % OUTPUTS:
 % mode: The location in the domain of the chosen mode (1xd sym row vector).
@@ -25,18 +28,20 @@ assumeAlso(args, 'real');
 % only on nonnegative numbers, like gamma pdf's). Conversion between
 % symfun's and anonymous function handles doesn't work properly in this
 % case, so we prompt the user to input their own f_sym.
-% f_sym = input(join(['Optional entry of symbolic version of f.' newline...
-%     'Press ENTER to skip, in which case it is created automatically.'...
-%     newline 'Manual entry is useful for piecewise f (e.g. a gamma'...
-%     "density) since those cases don't work when converting between sym"...
-%     'and matlab functions.' newline 'Manual entry MUST be defined in' ...
-%     'terms of symvar "args".'], ''));
+if should_prompt
+    f_sym = input(join(['Optional entry of symbolic version of f.' newline...
+        'Press ENTER to skip, in which case it is created automatically.'...
+        newline 'Manual entry is useful for piecewise f (e.g. a gamma'...
+        "density) since those cases don't work when converting between sym"...
+        'and matlab functions.' newline 'Manual entry MUST be defined in' ...
+        'terms of symvar "args".'], ''));
+end
 
-% If user skips f_sym entry, (attempt to) create it automatically
-% if size(f_sym, 1) == 0
-%     f_sym = f(args);
-% end
-f_sym = f(args);
+% If f_sym entry is skipped, (attempt to) create it automatically
+if ~should_prompt || size(f_sym, 1) == 0
+    f_sym = f(args);
+end
+
 logf = log(f_sym);
 hess = hessian(logf);
 

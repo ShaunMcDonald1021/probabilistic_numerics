@@ -1,7 +1,9 @@
 function [mean, covar, true_int, lap_approx] ...
     = laplace_poc_sym(f, a, b, d, s, lambda, alpha, do_sym_calcs, true_int)
-%TODO: peel out sym stuff and make a separate function. Just more
-%convenient then
+% THIS FUNCTION IS CURRENTLY UNFINISHED. IT WILL EVENTUALLY BE AN
+% ADAPTATION OF LAPLACE_POC.M WITH FULLY SYMBOLIC COMPUTATIONS, BUT THIS IS
+% NOT CURRENTLY A PRIORITY.
+
 %Covariance stuff
 C0_t = se_decay_gram(s, lambda);
 C0_cross = se_decay_cross_covar(s, lambda, a, b);
