@@ -53,8 +53,8 @@ f_at_mode = double(f_at_mode);
 % Hessian.
 if isa(s, 'gpuArray')
     [V, D] = eig(gpuArray(hess_at_mode));
-    %f_at_mode = gpuArray(f_at_mode); %TODO: see if this speeds it up
-    %(have to gather regardless for plotting later). Likewise for mode.
+    %f_at_mode = gpuArray(f_at_mode); % TODO: see if this speeds it up
+    % Likewise for mode.
 else
     [V, D] = eig(hess_at_mode);
 end
@@ -62,7 +62,10 @@ end
 % The matrix we use to rotate and scale the arguments, so that the negative 
 % Hessian of the log is the identity at the mode.
 rot_scale_mat = sqrt(-D)\V';
-%rot_scale_mat = [sqrt(3) 0; 0 1];
+% NOTE: rot_scale_mat is not unique. In particular, the "banana" produces
+% an "antidiagonal" matrix here, but it is obviously preferable to have a
+% diagonal one. Consider changing it manually if need be.
+
 % Need the absolute value of the determinant to put the integral posterior
 % on the correct scale
 rot_det = abs(det(rot_scale_mat));
@@ -80,6 +83,8 @@ lap_approx = rot_det*(f_at_mode*...
 m0_t = @(x) f_at_mode*exp(sum(((x-mode)*hess_at_mode).*(x-mode), 2)/2);
 
 % Function values at interrogation points
+% NOTE: 2018 Shaun noted that function handle evaluations could be slower
+% on the GPU than the CPU. May be worth investigating here
 gauss_interr = m0_t(s_trans);
 f_interr = f(s_trans);
 
@@ -145,8 +150,6 @@ if make_plots
     % Gaussian approximation and the interrogation points (on the
     % un-transformed scale).
     if d == 1
-        %til = tiledlayout(2,2);
-        %nexttile
         figure(1)
         full_fun = fplot(f_sym, [min(s_trans)-0.5 max(s_trans)+0.5]);
         hold on
@@ -237,9 +240,7 @@ if make_plots
     legend([lap_dist, quant_line, lap_line, true_line],...
         {'Posterior of integral', '95% region',...
         'Laplace approximation value', 'True integral value'});
-    %title('Laplace diagnostic plot');
-    
-    title('\lambda = 0.25, \gamma = 3');
+    title('Laplace diagnostic plot');
 end
 
 end
