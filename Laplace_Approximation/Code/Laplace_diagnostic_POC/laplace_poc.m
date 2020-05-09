@@ -44,7 +44,8 @@ true_int = NaN;
 
 % Collect necessary components for Laplace approximation,
 % and convert them from symbolic to numeric for faster computation
-[mode, f_sym, f_at_mode, hess_at_mode, args] = laplace_ingredients(f, d);
+[mode, f_sym, f_at_mode, hess_at_mode, args] = laplace_ingredients(f, d,...
+    logical(1));
 hess_at_mode = double(hess_at_mode);
 mode = double(mode);
 f_at_mode = double(f_at_mode);
