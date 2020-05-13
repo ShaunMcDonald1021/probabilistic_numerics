@@ -25,7 +25,7 @@ if isa(x, 'sym')
     (gamma^2 + lambda^2)^(1/2)))))./(gamma^2 + lambda^2)^(1/2);
 
     % Make it nice and pretty
-    cross_vals = simplify(prod(cross_val_mat));
+    cross_vals = simplify(prod(cross_val_mat, 1));
 else
     if gamma == Inf
         cross_val_mat = -lambda^2*pi*(erf((a - x)./(2*lambda)) - erf((b - x)./(2*lambda)));
