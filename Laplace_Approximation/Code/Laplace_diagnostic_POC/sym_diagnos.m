@@ -30,16 +30,15 @@ assumeAlso(lambda > 0 & gam > 0);
 
 if d == 1
     % Interrogation grid is +-2 standard deviations
-    s = sym(-2:2);
+    s = sym(-3:1.5:3);
     f = @(x) gamma(sym((v+1)/2))*(1+x.^2/v).^(-(v+1)/2)/...
         (gamma(sym(v/2))*sqrt(v*sym(pi)));
     
 elseif d == 2
     % Cross-shaped grid: +-2 s.d.'s along each axis
     s = sym(zeros([2 9]));
-    s(1,1:5) = -2:2;
-    s(2,6:7) = -2:-1;
-    s(2, 8:9) = 1:2;
+    s(1,1:5) = [-3 -1.5];
+    s(2, 8:9) = [1.5 3];
     
     if is_indep
         % Product of Cauchy distributions...
