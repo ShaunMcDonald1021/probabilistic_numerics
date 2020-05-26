@@ -49,7 +49,7 @@ true_int = NaN;
 hess_at_mode = double(hess_at_mode);
 mode = double(mode);
 f_at_mode = double(f_at_mode);
-
+%disp(f_sym);
 % The coordinate transformation is based on an eigendecomposition of the
 % Hessian.
 if isa(s, 'gpuArray')
