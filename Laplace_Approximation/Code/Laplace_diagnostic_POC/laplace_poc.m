@@ -111,7 +111,7 @@ else
 end
 
 weights = C0_cross/C0_t;
-post_var = rot_det^2*(C0 - weights*C0_cross')/alpha^d;
+post_var = f_at_mode^2*rot_det^2*(C0 - weights*C0_cross')/alpha^d;
 
 % Posterior mean
 post_mean = lap_approx + rot_det*weights*(f_interr - gauss_interr);
