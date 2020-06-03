@@ -41,7 +41,6 @@ end
 if ~should_prompt || size(f_sym, 1) == 0
     f_sym = f(args);
 end
-
 logf = log(f_sym);
 hess = hessian(logf);
 
