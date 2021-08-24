@@ -1,0 +1,295 @@
+\begin{thebibliography}{38}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Abe(2005)]{Abe2005}
+Shigeo Abe.
+\newblock {Training of support vector machines with Mahalanobis kernels}.
+\newblock In \emph{Proc. International Conference on Artificial Neural Networks
+  (ICANN 2005)}, pages 571--576. Springer, Berlin, Heidelberg, 2005.
+\newblock ISBN 3540287558.
+\newblock \doi{10.1007/11550907_90}.
+\newblock URL \url{http://www2.eedept.kobe-u.ac.jp/$\sim$abe}.
+
+\bibitem[Aeberhard et~al.(2018)Aeberhard, Flemming, and Nielsen]{Aeberhard2018}
+William~H Aeberhard, Joanna~Mills Flemming, and Anders Nielsen.
+\newblock {Review of State-Space Models for Fisheries Science}.
+\newblock \emph{Annual Review of Statistics and Its Application}, 5:\penalty0
+  215--235, 2018.
+\newblock \doi{10.1146/annurev-statistics}.
+\newblock URL \url{https://doi.org/10.1146/annurev-statistics-}.
+
+\bibitem[Barndorff-Nielsen et~al.(1989)Barndorff-Nielsen, Cox, and
+  Cox]{barndorff1989asymptotic}
+O~E Barndorff-Nielsen, D~R Cox, and H.F.D.R. Cox.
+\newblock \emph{{Asymptotic Techniques for Use in Statistics}}.
+\newblock Asymptotic Techniques for Use in Statistics. Springer US, 1989.
+\newblock ISBN 9780412314001.
+\newblock URL \url{https://books.google.ca/books?id=UQ9yIrZpMToC}.
+
+\bibitem[Berg and Nielsen(2016)]{Berg2016}
+Casper~W. Berg and Anders Nielsen.
+\newblock Accounting for correlated observations in an age-based state-space
+  stock assessment model.
+\newblock \emph{ICES Journal of Marine Science: Journal du Conseil},
+  73:\penalty0 1788--1797, 2016.
+\newblock \doi{10.1093/icesjms/fsw046}.
+
+\bibitem[Betancourt(2018)]{Betancourt2018}
+Michael Betancourt.
+\newblock {A Conceptual Introduction to Hamiltonian Monte Carlo}.
+\newblock Technical report, 2018.
+
+\bibitem[Briol et~al.(2019)Briol, Oates, Girolami, Osborne, and
+  Sejdinovic]{Briol2019}
+Fran{\c{c}}ois-Xavier Briol, Chris~J. Oates, Mark Girolami, Michael~A. Osborne,
+  and Dino Sejdinovic.
+\newblock {Probabilistic Integration: A Role in Statistical Computation?}
+\newblock \emph{Statistical Science}, 34\penalty0 (1):\penalty0 1--22, 2019.
+\newblock URL \url{http://www.}
+
+\bibitem[Chai and Garnett(2019)]{Chai2019}
+Henry Chai and Roman Garnett.
+\newblock {Improving Quadrature for Constrained Integrands}.
+\newblock Technical report, 2019.
+
+\bibitem[Chkrebtii et~al.(2016)Chkrebtii, Campbell, Calderhead, and
+  Girolami]{Chkrebtii2016}
+Oksana~A Chkrebtii, David~A Campbell, Ben Calderhead, and Mark~A Girolami.
+\newblock {Bayesian Solution Uncertainty Quantification for Differential
+  Equations}.
+\newblock \emph{Bayesian Analysis}, 11\penalty0 (4):\penalty0 1239--1267, 2016.
+\newblock \doi{10.1214/16-BA1036}.
+\newblock URL
+  \url{https://projecteuclid.org/download/pdfview{\_}1/euclid.ba/1473276259}.
+
+\bibitem[Chopin and Papaspiliopoulos(2020)]{Chopin2020}
+Nicolas Chopin and Omiros Papaspiliopoulos.
+\newblock \emph{{An Introduction to Sequential Monte Carlo}}.
+\newblock Springer Series in Statistics. Springer International Publishing,
+  Cham, 2020.
+\newblock ISBN 978-3-030-47844-5.
+\newblock \doi{10.1007/978-3-030-47845-2}.
+\newblock URL \url{https://link.springer.com/10.1007/978-3-030-47845-2}.
+
+\bibitem[Cockayne et~al.(2019)Cockayne, Oates, Sullivan, and
+  Girolami]{Cockayne2019}
+Jon Cockayne, Chris Oates, Tim Sullivan, and Mark Girolami.
+\newblock {Bayesian Probabilistic Numerical Methods}.
+\newblock \emph{SIAM Review}, 61\penalty0 (4):\penalty0 756--789, feb 2019.
+\newblock URL \url{http://arxiv.org/abs/1702.03673}.
+
+\bibitem[{De Bruijn}(1981)]{de1981asymptotic}
+Nicolaas~Govert {De Bruijn}.
+\newblock \emph{{Asymptotic methods in analysis}}, volume~4.
+\newblock Courier Corporation, 1981.
+
+\bibitem[Gunter et~al.(2014)Gunter, Osborne, Garnett, Hennig, and
+  Roberts]{Gunter2014}
+Tom Gunter, Michael~A Osborne, Roman Garnett, Philipp Hennig, and Stephen~J
+  Roberts.
+\newblock {Sampling for Inference in Probabilistic Models with Fast Bayesian
+  Quadrature}.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pages
+  2789--2797, 2014.
+
+\bibitem[Haario et~al.(1999)Haario, Saksman, and Tamminen]{Haario1999}
+Heikki Haario, Eero Saksman, and Johanna Tamminen.
+\newblock {Adaptive proposal distribution for random walk Metropolis
+  algorithm}.
+\newblock \emph{Computational Statistics}, 14:\penalty0 375--395, 1999.
+
+\bibitem[Hennig et~al.(2015)Hennig, Osborne, and Girolami]{Hennig2015}
+Philipp Hennig, Michael~A. Osborne, and Mark Girolami.
+\newblock {Probabilistic numerics and uncertainty in computations}.
+\newblock \emph{Proceedings of the Royal Society A: Mathematical, Physical and
+  Engineering Sciences}, 471\penalty0 (2179):\penalty0 20150142, jul 2015.
+\newblock ISSN 1364-5021.
+\newblock \doi{10.1098/rspa.2015.0142}.
+\newblock URL
+  \url{https://royalsocietypublishing.org/doi/10.1098/rspa.2015.0142}.
+
+\bibitem[Husz{\'a}r and Duvenaud(2012)]{Huszar2012}
+Ferenc Husz{\'a}r and David Duvenaud.
+\newblock Optimally-weighted herding is bayesian quadrature.
+\newblock In \emph{Proceedings of the Twenty-Eighth Conference on Uncertainty
+  in Artificial Intelligence}, pages 377--386, 2012.
+
+\bibitem[{Jan Koopman} et~al.(2009){Jan Koopman}, Shephard, and
+  Creal]{JanKoopman2009}
+Siem {Jan Koopman}, Neil Shephard, and Drew Creal.
+\newblock {Testing the assumptions behind importance sampling}.
+\newblock \emph{Journal of Econometrics}, 149:\penalty0 2--11, 2009.
+\newblock \doi{10.1016/j.jeconom.2008.10.002}.
+\newblock URL \url{www.elsevier.com/locate/jeconom}.
+
+\bibitem[Jolliffe(2002)]{Jolliffe2002}
+I.T. Jolliffe.
+\newblock \emph{{Principal Component Analysis}}.
+\newblock Springer Series in Statistics. Springer-Verlag New York, New York, 2
+  edition, 2002.
+\newblock ISBN 0-387-95442-2.
+\newblock \doi{10.1007/b98835}.
+\newblock URL \url{http://link.springer.com/10.1007/b98835}.
+
+\bibitem[Kaarnioja(2013)]{Kaarnioja2013}
+Vesa Kaarnioja.
+\newblock {Smolyak Quadrature}.
+\newblock Master's thesis, University of Helsinki, 2013.
+
+\bibitem[Karvonen and S{\"{a}}rkk{\"{a}}(2018)]{Karvonen2018}
+Toni Karvonen and Simo S{\"{a}}rkk{\"{a}}.
+\newblock {Fully symmetric kernel quadrature}.
+\newblock \emph{SIAM Journal on Scientific Computing}, 40\penalty0
+  (2):\penalty0 A697--A720, mar 2018.
+\newblock ISSN 10957197.
+\newblock \doi{10.1137/17M1121779}.
+
+\bibitem[Kennedy(1998)]{Kennedy1998}
+Marc Kennedy.
+\newblock {Bayesian quadrature with non-normal approximating functions}.
+\newblock \emph{Statistics and Computing}, 8:\penalty0 365--375, 1998.
+
+\bibitem[Koyama et~al.(2010)Koyama, {Castellanos P{\'{e}}rez-bolde}, Shalizi,
+  and Kass]{Koyama2010}
+Shinsuke Koyama, Lucia {Castellanos P{\'{e}}rez-bolde}, Cosma~Rohilla Shalizi,
+  and Robert~E. Kass.
+\newblock {Approximate Methods for State-Space Models}.
+\newblock \emph{Journal of the American Statistical Association}, 105\penalty0
+  (489):\penalty0 170--180, 2010.
+\newblock \doi{10.1198/jasa.2009.tm08326}.
+
+\bibitem[Kristensen et~al.(2016)Kristensen, Nielsen, Berg, Skaug, and
+  Bell]{Kristensen2016}
+Kasper Kristensen, Anders Nielsen, Casper~W. Berg, Hans Skaug, and Bradley~M.
+  Bell.
+\newblock {TMB: Automatic differentiation and laplace approximation}.
+\newblock \emph{Journal of Statistical Software}, 70\penalty0 (1):\penalty0
+  1--21, apr 2016.
+\newblock ISSN 15487660.
+\newblock \doi{10.18637/jss.v070.i05}.
+\newblock URL
+  \url{https://www.jstatsoft.org/index.php/jss/article/view/v070i05/v70i05.pdf
+  https://www.jstatsoft.org/index.php/jss/article/view/v070i05}.
+
+\bibitem[Lindley(1961)]{Lindley1961}
+D.~V. Lindley.
+\newblock {The Use of Prior Probability Distributions in Statistical Inference
+  and Decisions}.
+\newblock In \emph{Proc. 4th Berkeley Symp. on Math. Stat. and Prob.},
+  volume~4, pages 453--468. University of California Press, jan 1961.
+
+\bibitem[Minka(2000)]{Minka2000}
+Thomas~P. Minka.
+\newblock {Deriving quadrature rules from Gaussian processes}.
+\newblock Technical report, Carnegie Mellon University, 2000.
+
+\bibitem[Murray(2015)]{Murray2015}
+Lawrence~M. Murray.
+\newblock {Bayesian state-space modelling on high-performance hardware using
+  LibBi}.
+\newblock \emph{Journal of Statistical Software}, 67\penalty0 (10), oct 2015.
+\newblock ISSN 15487660.
+\newblock \doi{10.18637/jss.v067.i10}.
+
+\bibitem[Nielsen and Berg(2014)]{Nielsen2014}
+Anders Nielsen and Casper~W. Berg.
+\newblock Estimation of time-varying selectivity in stock assessments using
+  state-space models.
+\newblock \emph{Fisheries Research}, 158:\penalty0 96--101, 2014.
+\newblock \doi{10.1016/j.fishres.2014.01.014}.
+
+\bibitem[O'Hagan(1991)]{OHagan1991}
+A.~O'Hagan.
+\newblock {Bayes-Hermite quadrature}.
+\newblock \emph{Journal of Statistical Planning and Inference}, 29:\penalty0
+  245--260, 1991.
+\newblock \doi{10.1016/0378-3758(91)90002-V}.
+
+\bibitem[Osborne(2010)]{Osborne2010}
+Michael Osborne.
+\newblock \emph{{Bayesian Gaussian Processes for Sequential Prediction,
+  Optimisation and Quadrature}}.
+\newblock PhD thesis, University of Oxford, 2010.
+
+\bibitem[Osborne et~al.(2012)Osborne, Duvenaud, Garnett, Rasmussen, Roberts,
+  and Ghahramani]{Osborne2012}
+Michael~A Osborne, David Duvenaud, Roman Garnett, Carl~E Rasmussen, Stephen~J
+  Roberts, and Zoubin Ghahramani.
+\newblock {Active Learning of Model Evidence Using Bayesian Quadrature}.
+\newblock In \emph{Advances in neural information processing systems}, pages
+  46--54, 2012.
+
+\bibitem[Pr{\"{u}}her et~al.(2017)Pr{\"{u}}her, Tronarp, Karvonen,
+  S{\"{a}}rkk{\"{a}}, and Straka]{Pruher2017}
+Jakub Pr{\"{u}}her, Filip Tronarp, Toni Karvonen, Simo S{\"{a}}rkk{\"{a}}, and
+  Ondřej Straka.
+\newblock {Student-t process quadratures for filtering of non-linear systems
+  with heavy-tailed noise}.
+\newblock In \emph{20th International Conference on Information Fusion}, Xi'an,
+  China, aug 2017. Institute of Electrical and Electronics Engineers Inc.
+\newblock \doi{10.23919/ICIF.2017.8009742}.
+
+\bibitem[Rasmussen and Ghahramani(2003)]{Rasmussen2003}
+Carl~Edward Rasmussen and Zoubin Ghahramani.
+\newblock {Bayesian Monte Carlo}.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pages
+  489--496, 2003.
+\newblock URL \url{http://www.gatsby.ucl.ac.uk}.
+
+\bibitem[Rasmussen and Williams(2006)]{Rasmussen2006}
+Carl~Edward. Rasmussen and Christopher K.~I. Williams.
+\newblock \emph{{Gaussian processes for machine learning}}.
+\newblock MIT Press, 2006.
+\newblock ISBN 9780262182539.
+
+\bibitem[S{\"{a}}rkk{\"{a}} et~al.(2015)S{\"{a}}rkk{\"{a}}, Hartikainen,
+  Svensson, and Sandblom]{Sarkka2015}
+Simo S{\"{a}}rkk{\"{a}}, Jouni Hartikainen, Lennart Svensson, and Fredrik
+  Sandblom.
+\newblock {On the relation between Gaussian process quadratures and sigma-point
+  methods}.
+\newblock Technical report, 2015.
+
+\bibitem[Skaug and Fournier(2006)]{Skaug2006}
+Hans~J Skaug and David~A Fournier.
+\newblock {Automatic approximation of the marginal likelihood in non-Gaussian
+  hierarchical models}.
+\newblock \emph{Computational Statistics \& Data Analysis}, 51:\penalty0
+  699--709, 2006.
+\newblock \doi{10.1016/j.csda.2006.03.005}.
+\newblock URL \url{www.elsevier.com/locate/csda}.
+
+\bibitem[Tierney and Kadane(1986)]{Tierney1986}
+Luke Tierney and Joseph~B. Kadane.
+\newblock {Accurate Approximations for Posterior Moments and Marginal
+  Densities}.
+\newblock \emph{Journal of the American Statistical Association}, 81\penalty0
+  (393):\penalty0 82--86, 1986.
+
+\bibitem[Tokdar and Kass(2009)]{Tokdar2009}
+Surya~T. Tokdar and Robert~E Kass.
+\newblock {Importance sampling: a review}.
+\newblock \emph{Advanced Review}, 2:\penalty0 54--60, 2009.
+\newblock \doi{10.1002/wics.56}.
+
+\bibitem[Yuan and Druzdzel(2007)]{Yuan2007}
+Changhe Yuan and Marek~J. Druzdzel.
+\newblock {Theoretical analysis and practical insights on importance sampling
+  in Bayesian networks}.
+\newblock \emph{International Journal of Approximate Reasoning}, 46:\penalty0
+  320--333, 2007.
+\newblock \doi{10.1016/j.ijar.2006.09.006}.
+\newblock URL \url{www.elsevier.com/locate/ijar}.
+
+\bibitem[Zhou(2017)]{Zhou2017}
+Haoxuan Zhou.
+\newblock {Bayesian Integration for Assessing the Quality of the Laplace
+  Approximation}.
+\newblock Master's thesis, Simon Fraser University, nov 2017.
+\newblock URL \url{http://summit.sfu.ca/item/17765}.
+
+\end{thebibliography}

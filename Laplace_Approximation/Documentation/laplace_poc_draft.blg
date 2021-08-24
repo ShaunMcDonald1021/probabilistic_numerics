@@ -1,0 +1,58 @@
+This is BibTeX, Version 0.99d
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: laplace_poc_draft.aux
+Reallocating 'name_of_file' (item size: 1) to 9 items.
+The style file: plainnat.bst
+Reallocating 'name_of_file' (item size: 1) to 19 items.
+Database file #1: laplace_approx_bib.bib
+You're missing a field name---line 512 of file laplace_approx_bib.bib
+ : 
+ : %  key = {MATLAB Optimization Toolbox},
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+Warning--empty institution in Betancourt2018
+Warning--empty institution in Chai2019
+Warning--can't use both volume and number fields in Lindley1961
+Warning--empty institution in Sarkka2015
+You've used 38 entries,
+            2773 wiz_defined-function locations,
+            901 strings with 12699 characters,
+and the built_in function-call counts, 17869 in all, are:
+= -- 1711
+> -- 927
+< -- 32
++ -- 317
+- -- 279
+* -- 1427
+:= -- 2785
+add.period$ -- 162
+call.type$ -- 38
+change.case$ -- 206
+chr.to.int$ -- 38
+cite$ -- 80
+duplicate$ -- 814
+empty$ -- 1423
+format.name$ -- 341
+if$ -- 3756
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 36
+newline$ -- 240
+num.names$ -- 152
+pop$ -- 350
+preamble$ -- 1
+purify$ -- 169
+quote$ -- 0
+skip$ -- 627
+stack$ -- 0
+substring$ -- 693
+swap$ -- 103
+text.length$ -- 8
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 393
+warning$ -- 4
+while$ -- 167
+width$ -- 0
+write$ -- 588
+(There was 1 error message)
