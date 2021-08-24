@@ -1,0 +1,15 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Framework and notation}{}% 2
+\BOOKMARK [1][-]{section.3}{Probabilistic numerics and Bayesian quadrature}{}% 3
+\BOOKMARK [1][-]{section.4}{Design decisions}{}% 4
+\BOOKMARK [2][-]{subsection.4.1}{Placement of interrogation points}{section.4}% 5
+\BOOKMARK [2][-]{subsection.4.2}{Form of covariance kernel}{section.4}% 6
+\BOOKMARK [2][-]{subsection.4.3}{Choice of measure}{section.4}% 7
+\BOOKMARK [2][-]{subsection.4.4}{Invariance of diagnostic behaviour}{section.4}% 8
+\BOOKMARK [1][-]{section.5}{Hyperparameter calibration}{}% 9
+\BOOKMARK [2][-]{subsection.5.1}{Calibrating in two dimensions}{section.5}% 10
+\BOOKMARK [1][-]{section.6}{Example: a banana-shaped function}{}% 11
+\BOOKMARK [1][-]{section.7}{On quantitative optimization of hyperparameters}{}% 12
+\BOOKMARK [1][-]{section.8}{The curse of dimensionality}{}% 13
+\BOOKMARK [1][-]{section.9}{Application: North Sea cod modelling}{}% 14
+\BOOKMARK [1][-]{section.10}{Discussion}{}% 15

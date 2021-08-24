@@ -1,6 +1,10 @@
 function [post_mean, post_var, lap_approx, true_int] ...
     = laplace_poc(f, a, b, d, s, lambda, alpha, gamma, input_true_int, make_plots)
 
+% TODO: ACCESSORY FUNCTIONS HAVE BEEN MODIFIED FOR NUMERICAL STABILITY IN
+% HIGH DIMENSIONS (e.g. constants exponential in d have been removed).
+% MODIFY THIS CODE ACCORDINGLY, AS IN THE APPS
+
 % Conducts a diagnostic of the Laplace approximation using probabilistic
 % numerics. The target function is given a GP prior with a decaying
 % squared exponential covariance function (see documentation and

@@ -35,9 +35,11 @@ gram_mat = exp(gram_mat);
 
 % Maintain prettiness and accuracy for as long as possible with sym
 if isa(s, 'sym')
+    % Needs to be updated, but honestly I doubt anyone's gonna use the sym
+    % method at this point anyway
     gram_mat_simp = simplify((sqrt(sym(pi))*lambda)^d*gram_mat);
 else
-    gram_mat_simp = (sqrt(pi)*lambda)^d*gram_mat;
+    gram_mat_simp = gram_mat;
 end
 
 end
