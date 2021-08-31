@@ -25,7 +25,7 @@ lap_diag_from_tmb = function(obj){
   log_T_det = -sum(log(eig$values))/2
   eig_time = proc.time() - start
   
-  return(list(d = d, mode = mode, logf_at_mode = logf_at_mode, logf = logf, T_mat = T_mat, log_T_det = log_T_det, eig_time = eig_time))
+  return(list(d = d, mode = mode, theta_hat = theta_hat, logf_at_mode = logf_at_mode, logf = logf, T_mat = T_mat, log_T_det = log_T_det, eig_time = eig_time))
 }
 
 
@@ -35,24 +35,24 @@ get_log_interrs = function(logf, T_mat, mode, s_star){
 }
 
 
-tail_checker = function(outliers, logf, logf_at_mode, T_mat, mode, sigma = 1, deccheck = 20, zerocheck= 10){
+tail_checker = function(outliers, logf, logf_at_mode, scale_mat, T_mat, mode, sigma = 1, deccheck = 20, zerocheck= 10){
   num_outliers = ncol(as.matrix(outliers))
   tails = vector('list', num_outliers)
   is_decreasing = logical(num_outliers)
   is_zero = logical(num_outliers)
-  
+  #scale_mat = sigma^2 * T_mat %*% t(T_mat) 
   for(i in 1:num_outliers){
     out_cent = solve(T_mat, outliers[,i] - mode)
     out_norm = sqrt(sum(out_cent^2))
     out_dir = out_cent/out_norm
     out_vec = T_mat %*% out_dir
-    scale_mat = sigma^2 * T_mat %*% t(T_mat)
+    #scale_mat = sigma^2 * T_mat %*% t(T_mat)
     
     eval_grid = seq(floor(out_norm), 1000, by = 5)
-    diff_logs = rep(dmvnorm(as.numeric(mode), sigma = scale_mat, mean = as.numeric(mode), log = TRUE), length(eval_grid))
+    diff_logs = rep(dmvn(as.numeric(mode), sigma = scale_mat, mu = as.numeric(mode), log = TRUE), length(eval_grid))
     for(j in seq_along(eval_grid)){
       diff_logs[j] = diff_logs[j] + 2*(logf(eval_grid[j]*out_vec + mode) - logf_at_mode) -
-        dmvnorm(as.numeric(eval_grid[j]*out_vec + mode), sigma = scale_mat, mean = as.numeric(mode), log = TRUE)
+        dmvn(as.numeric(eval_grid[j]*out_vec + mode), sigma = scale_mat, mu = as.numeric(mode), log = TRUE)
     }
     tails[[i]] = diff_logs[!is.nan(diff_logs)]
     
@@ -70,32 +70,56 @@ tail_checker = function(outliers, logf, logf_at_mode, T_mat, mode, sigma = 1, de
 }
 
 
-imp_sampler_t = function(N, nu, logf, logf_at_mode, T_mat, mode, num_outliers = 10, sigma = 1){
-  scale_mat = sigma^2 * T_mat %*% t(T_mat)
+imp_sampler_t = function(N, nu, logf, logf_at_mode, scale_mat, T_mat, mode, num_outliers = 10, sigma = 1){
+  #scale_mat = sigma^2 * T_mat %*% t(T_mat)
   
-  X = rmvt(N, sigma = scale_mat, df = nu, delta = mode, type = 'shifted')
+  X = rmvt(N, sigma = scale_mat, df = nu, mu = mode)
+#type = 'shifted', checkSymmetry = FALSE)
+  #print(dim(X))
+  #print('samples accquired')
   # mode_diff = logf_at_mode - dmvt(mode, sigma = scale_mat, df = nu, delta = mode, type = 'shifted',
   #                                         log = TRUE, checkSymmetry = FALSE)
-  weights = exp(apply(X, 1, logf) - dmvt(X, sigma = scale_mat, df = nu, delta = mode, type = 'shifted',
-                                       log = TRUE, checkSymmetry = FALSE))
-  
+ #weights = exp(- dmvt(X, sigma = scale_mat, df = nu, mu = mode,
+ #                                      log = TRUE))
+  weights = exp(apply(X, 1, logf) - dmvt(X, sigma = scale_mat, df = nu, mu = mode, log = TRUE))
+  #                                     type = 'shifted', checkSymmetry = FALSE))  
+  #print(length(weights))
+  #  print('weights calculated')
   # Get indices of num_outliers largest weights to check tail behaviour
-  tops = which(weights > quantile(weights, 1-num_outliers/N))
-  outliers = t(X[tops,])
-  tail_checker(outliers, logf, logf_at_mode, T_mat, mode)
+  tops = which(weights > quantile(weights, 1-num_outliers/N, na.rm = TRUE))
+#print(tops)  
+outliers = t(X[tops,])
+ # print('outliers found')
+ # rm(X)
+ # gc()
+  tail_checker(outliers, logf, logf_at_mode, scale_mat, T_mat, mode)
   
   return(weights)
 }
 
 
-imp_sampler_parallel = function(N, nu, logf, logf_at_mode, T_mat, mode, num_outliers = 10, sigma = 1,
+imp_sampler_parallel = function(N, nu, logf, logf_at_mode, T_mat, mode, splitup = 1, num_outliers = 10, sigma = 1,
                                 thresh = 0.9, cores = 6){
   start = proc.time()
-  weights = pvec(1:N,
-                 function(x) imp_sampler_t(length(x), nu, logf, logf_at_mode, T_mat, mode, num_outliers, sigma),
-                 mc.cores = cores)
-  time = proc.time() - start
-  thresh_quant = quantile(weights, thresh, na.rm = TRUE)
+  scale_mat = sigma^2 * T_mat %*% t(T_mat)
+ # X = rmvt(N, sigma = scale_mat, df = nu, mu = mode, ncores = cores)
+  #print('samples obtained')
+ weights = numeric(0) 
+ for(i in 1:splitup){
+  weights = c(weights, pvec(1:(N/splitup),
+                 function(x) imp_sampler_t(length(x), nu, logf, logf_at_mode, scale_mat, T_mat, mode, num_outliers, sigma),
+                 mc.cores = cores))
+  #weights = apply(X, 1, logf)
+  #print('weights calculated')
+  #print(length(weights))
+  #print(weights[1])
+gc()
+}
+#print(sum(weights))  
+time = proc.time() - start
+#print(class(weights))
+#print(length(weights))  
+thresh_quant = quantile(weights, thresh, na.rm = TRUE)
   # Only return top 100*(1-thresh)% of weights to save space
   
   return(list(topweights = weights[weights >= thresh_quant], time = time, thresh_quant = thresh_quant,
