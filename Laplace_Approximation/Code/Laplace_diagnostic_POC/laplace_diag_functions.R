@@ -60,8 +60,10 @@ tail_checker = function(outliers, logf, logf_at_mode, scale_mat, T_mat, mode, si
     is_zero[i] = all(exp(tail(tails[[i]], zerocheck)) == 0)
   }
   
-  if(all(is_decreasing) & all(is_zero)) print('Tails in directions of outliers look okay')
-  else{
+  if(all(is_decreasing) & all(is_zero)){
+    print('Tails in directions of outliers look okay')
+  } else{
+    print('Problem with a tail!')
     if(!all(is_decreasing)) print('One of the tails does not monotonically decrease')
     if(!all(is_zero)) print('One of the tails does not decay to zero')
   }
@@ -88,11 +90,11 @@ imp_sampler_t = function(N, nu, logf, logf_at_mode, scale_mat, T_mat, mode, num_
   # Get indices of num_outliers largest weights to check tail behaviour
   tops = which(weights > quantile(weights, 1-num_outliers/N, na.rm = TRUE))
 #print(tops)  
-outliers = t(X[tops,])
+  outliers = t(X[tops,])
  # print('outliers found')
- # rm(X)
- # gc()
-  tail_checker(outliers, logf, logf_at_mode, scale_mat, T_mat, mode)
+   rm(X)
+   gc()
+   tail_checker(outliers, logf, logf_at_mode, scale_mat, T_mat, mode)
   
   return(weights)
 }

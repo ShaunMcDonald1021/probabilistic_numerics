@@ -18,10 +18,10 @@ set.seed(24601)
 dat1970 = reduce(nscodData, year = c(1963:1969, 1976:2015), conf = nscodConf)
 conf1970 = attr(dat1970, 'conf')
 param1970 = defpar(dat1970, conf1970)
-fit1970 = sam.fit(dat1970, conf1970, param1970, newtonsteps = 0, sim.condRE = FALSE,
+fit_1970 = sam.fit(dat1970, conf1970, param1970, newtonsteps = 0, sim.condRE = FALSE, silent = TRUE,
                   inner.control = list(tol = 1e-10, tol10 = 1e-6, maxit = 5000))$obj
 
-diag_1970 = lap_diag_from_tmb(fit1970)
+diag_1970 = lap_diag_from_tmb(fit_1970)
 d = diag_1970$d
 rm(dat1970, conf1970, param1970)
 gc()
@@ -29,13 +29,15 @@ gc()
 #s_star[,2:(d+1)] = s_star[,(d+1):2]
 #logf_interrs_1970 = get_log_interrs(diag_1970$logf, diag_1970$T_mat, diag_1970$mode, s_star)
 
-samp_sizes = 1e6*2^(-2:6)
+#samp_sizes = 1e6*2^(-2:6)
+samp_sizes = 250000
+splitup_factor = c(rep(1, 7), 2, 4)
 imp_list_1970 = vector('list', length(samp_sizes))
 for(i in rev(seq_along(samp_sizes))){
   imp_list_1970[[i]] = imp_sampler_parallel(samp_sizes[i], 5, diag_1970$logf, diag_1970$logf_at_mode, diag_1970$T_mat, diag_1970$mode,
-splitup = 1 + (i >= 9))
+splitup = splitup_factor[i])
   gc()
-  print(paste(samp_sizes[i], 'done'))
+  print(paste('Importance sampler of size', samp_sizes[i], 'done for 1970 model'))
  .Random.seed = nextRNGStream(.Random.seed)
 }
 
@@ -61,9 +63,10 @@ for(i in 1:100){
   s_star = cbind(numeric(d), diag(sqrt(d), d), diag(-sqrt(d), d))
   s_star[,2:(d+1)] = s_star[,(d+1):2]
   logf_interrs_1970 = get_log_interrs(diag_1970$logf, diag_1970$T_mat, diag_1970$mode, s_star)
-  write.mat(append(list(logf_interrs = logf_interrs_1970, s_star = s_star), diag_1970[c(2,3,5,6)]),
+  write.mat(append(list(logf_interrs = logf_interrs_1970, s_star = s_star), diag_1970[c(2,4,6,7)]),
             filename = 'rmatiotest.mat')
   diag_times1970[i] = proc.time()[3] - diag_start
+  print(paste('Diagnostic replication', i, 'done for 1970 model'))
 }
 
-save.image('1970_stuff')
+save.image('1970_stuff.RData')
