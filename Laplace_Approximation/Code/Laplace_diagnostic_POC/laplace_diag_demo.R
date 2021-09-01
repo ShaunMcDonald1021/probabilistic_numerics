@@ -21,6 +21,8 @@ conf1970 = attr(dat1970, 'conf')
 param1970 = defpar(dat1970, conf1970)
 fit_1970 = sam.fit(dat1970, conf1970, param1970, newtonsteps = 0, sim.condRE = FALSE, silent = TRUE,
                    inner.control = list(tol = 1e-10, tol10 = 1e-6, maxit = 5000))$obj
+# Ensure last.par == last.par.best
+fit_1970$fn(fit_1970$env$last.par.best[fit_1970$env$lfixed()])
 
 diag_1970 = lap_diag_from_tmb(fit_1970)
 d = diag_1970$d
@@ -86,8 +88,11 @@ rm(list = setdiff(ls(), c('d', 'samp_sizes', 'splitup_factor')))
 dat1972 = reduce(nscodData, year = c(1963:1971, 1978:2015), conf = nscodConf)
 conf1972 = attr(dat1972, 'conf')
 param1972 = defpar(dat1972, conf1972)
+# This one needs lower tolerance for good numerical behaviour
 fit_1972 = sam.fit(dat1972, conf1972, param1972, newtonsteps = 0, sim.condRE = FALSE, silent = TRUE,
-                   inner.control = list(tol = 1e-10, tol10 = 1e-6, maxit = 5000))$obj
+                   inner.control = list(tol = 1e-12, tol10 = 1e-10, maxit = 5000))$obj
+# Ensure last.par == last.par.best
+fit_1972$fn(fit_1972$env$last.par.best[fit_1972$env$lfixed()])
 
 diag_1972 = lap_diag_from_tmb(fit_1972)
 
@@ -114,6 +119,7 @@ large_checkcon_times1972 = numeric(100)
 large_checkcon_pvals1972 = numeric(100)
 diag_times1972 = numeric(100)
 
+# Repetition legitimizes
 for(i in 1:100){
   small_start = proc.time()[3]
   small_checkcon = checkConsistency(fit_1972, par = diag_1972$theta, n = 100)
