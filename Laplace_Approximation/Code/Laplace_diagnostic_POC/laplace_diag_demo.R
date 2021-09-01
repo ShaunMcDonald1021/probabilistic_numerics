@@ -19,7 +19,7 @@ set.seed(24601)
 dat1970 = reduce(nscodData, year = c(1963:1969, 1976:2015), conf = nscodConf)
 conf1970 = attr(dat1970, 'conf')
 param1970 = defpar(dat1970, conf1970)
-fit_1970 = sam.fit(dat1970, conf1970, param1970, newtonsteps = 0, sim.condRE = FALSE,
+fit_1970 = sam.fit(dat1970, conf1970, param1970, newtonsteps = 0, sim.condRE = FALSE, silent = TRUE,
                    inner.control = list(tol = 1e-10, tol10 = 1e-6, maxit = 5000))$obj
 
 diag_1970 = lap_diag_from_tmb(fit_1970)
@@ -68,10 +68,10 @@ for(i in 1:100){
   s_star = cbind(numeric(d), diag(sqrt(d), d), diag(-sqrt(d), d))
   s_star[,2:(d+1)] = s_star[,(d+1):2]
   logf_interrs_1970 = get_log_interrs(diag_1970$logf, diag_1970$T_mat, diag_1970$mode, s_star,
-                                      TRUE, diag_1970$logf_at_mode, diag_1970$log_T_det,'1970_diag.mat')
+                                      TRUE, diag_1970$logf_at_mode, diag_1970$log_T_det, '1970_diag.mat')
   # This is somewhat inefficient, but saving the interrogation values is certainly part of
   # the computational cost so it should be timed as well)
-  diag_times1970[i] = proc.time()[3] - diag_start
+  diag_times1970[i] = proc.time()[3] - diag_start + diag_1970$eig_time[3]
   
   print(paste('Diagnostic replication', i, 'done for 1970 model'))
 }
@@ -86,7 +86,7 @@ rm(list = setdiff(ls(), c('d', 'samp_sizes', 'splitup_factor')))
 dat1972 = reduce(nscodData, year = c(1963:1971, 1978:2015), conf = nscodConf)
 conf1972 = attr(dat1972, 'conf')
 param1972 = defpar(dat1972, conf1972)
-fit_1972 = sam.fit(dat1972, conf1972, param1972, newtonsteps = 0, sim.condRE = FALSE,
+fit_1972 = sam.fit(dat1972, conf1972, param1972, newtonsteps = 0, sim.condRE = FALSE, silent = TRUE,
                    inner.control = list(tol = 1e-10, tol10 = 1e-6, maxit = 5000))$obj
 
 diag_1972 = lap_diag_from_tmb(fit_1972)
@@ -129,10 +129,10 @@ for(i in 1:100){
   s_star = cbind(numeric(d), diag(sqrt(d), d), diag(-sqrt(d), d))
   s_star[,2:(d+1)] = s_star[,(d+1):2]
   logf_interrs_1972 = get_log_interrs(diag_1972$logf, diag_1972$T_mat, diag_1972$mode, s_star,
-                                      TRUE, diag_1972$logf_at_mode, diag_1972$log_T_det,'1972_diag.mat')
+                                      TRUE, diag_1972$logf_at_mode, diag_1972$log_T_det, '1972_diag.mat')
   # This is somewhat inefficient, but saving the interrogation values is certainly part of
   # the computational cost so it should be timed as well)
-  diag_times1972[i] = proc.time()[3] - diag_start
+  diag_times1972[i] = proc.time()[3] - diag_start + diag_1972$eig_time[3]
   
   print(paste('Diagnostic replication', i, 'done for 1972 model'))
 }
