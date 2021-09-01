@@ -80,8 +80,9 @@ for(i in 1:100){
 
 save.image('1970_stuff.RData')
 
-# Clean (almost) everything up to save space
-rm(list = setdiff(ls(), c('d', 'samp_sizes', 'splitup_factor')))
+# Get rid of all the 1970 stuff to save space
+rm(list = grep('1970', ls(), value = TRUE))
+gc()
 
 #### 1972 model ####
 # Same things as for the 1970 model
