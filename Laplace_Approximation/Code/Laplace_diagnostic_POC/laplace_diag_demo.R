@@ -97,8 +97,6 @@ gc()
 
 # Importance samplers of increasing sizes
 # IMPORTANT: manually set cores = 1 in imp_sampler_parallel if running on Windows
-samp_sizes = 1e6*2^(-2:7)
-splitup_factor = c(rep(1, 7), 2, 4, 8)
 imp_list_1972 = vector('list', length(samp_sizes))
 for(i in rev(seq_along(samp_sizes))){
   imp_list_1972[[i]] = imp_sampler_parallel(samp_sizes[i], 5, diag_1972$logf,
