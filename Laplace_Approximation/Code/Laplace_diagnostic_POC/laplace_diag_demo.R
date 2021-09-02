@@ -35,14 +35,15 @@ gc()
 # IMPORTANT: manually set cores = 1 in imp_sampler_parallel if running on Windows
 samp_sizes = 1e6*2^(-2:7)
 splitup_factor = c(rep(1, 7), 2, 4, 8)
+threshes = c(rep(0.9, 7), rep(0.95, 2), 0.975)
 imp_list_1970 = vector('list', length(samp_sizes))
 for(i in rev(seq_along(samp_sizes))){
   imp_list_1970[[i]] = imp_sampler_parallel(samp_sizes[i], 5, diag_1970$logf,
                                             diag_1970$logf_at_mode, diag_1970$T_mat,
-                                            diag_1970$mode, splitup = splitup_factor[i])
+                                            diag_1970$mode, splitup = splitup_factor[i],
+                                            thresh = threshes[i])
   gc() # Can never have too much memory
   print(paste('Importance sampler of size', samp_sizes[i], 'done for 1970 model'))
-  .Random.seed = nextRNGStream(.Random.seed) # Have to do this manually when forking
 }
 
 # Repeatedly run and time various Laplace diagnostics:
@@ -107,10 +108,10 @@ imp_list_2005 = vector('list', length(samp_sizes))
 for(i in rev(seq_along(samp_sizes))){
   imp_list_2005[[i]] = imp_sampler_parallel(samp_sizes[i], 5, diag_2005$logf,
                                             diag_2005$logf_at_mode, diag_2005$T_mat,
-                                            diag_2005$mode, splitup = splitup_factor[i])
+                                            diag_2005$mode, splitup = splitup_factor[i],
+                                            thresh = threshes[i])
   gc()
   print(paste('Importance sampler of size', samp_sizes[i], 'done for 2005 model'))
-  .Random.seed = nextRNGStream(.Random.seed) 
 }
 
 # Repeatedly run and time various Laplace diagnostics:
