@@ -116,7 +116,7 @@ tail_checker = function(outliers, logf, logf_at_mode, T_mat, mode, sigma = 1,
     out_norm = sqrt(sum(out_cent^2))
     out_dir = out_cent/out_norm # Unit vector in the direction of out_cent
     # Scale and rotate out_dir by T_mat (see Sec. 4.1 of manuscript)
-    out_vec = T_mat %*% out_dir
+    out_vec = as.numeric(T_mat %*% out_dir)
     
     # Check starts at the outlier itself and goes WAAAAAAY out into the tail
     eval_grid = seq(floor(out_norm), 1000, by = 5)
@@ -203,8 +203,7 @@ imp_sampler_parallel = function(N, nu, logf, logf_at_mode, T_mat, mode, splitup 
                 pvec(1:(N/splitup),
                      function(x) imp_sampler_t(length(x), nu, logf, logf_at_mode, T_mat,
                                                mode, sigma, scale_mat, num_outliers),
-                     mc.cores = cores))  
-    gc() # You can never have too much memory
+                     mc.cores = cores))
   }
   time = proc.time() - start
   
