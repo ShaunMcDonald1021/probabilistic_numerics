@@ -51,7 +51,7 @@ kmean = @(x)(lambda^2/(gam^2+lambda^2))^(d/2)*...
 Ikmean = (lambda^2/(2*gam^2 + lambda^2))^(d/2);
 
 [Q, wce, w] = kq_fss(Y, Us, k, kmean, Ikmean);
-
 post_mean = Q + lap_app;
+
 alph = (Q/(1.96*wce*exp(logdet_T + logf_at_mode)))^(-2/d);
 

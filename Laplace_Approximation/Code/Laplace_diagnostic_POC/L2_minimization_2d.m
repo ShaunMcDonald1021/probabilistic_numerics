@@ -1,3 +1,4 @@
+
 function lambda = L2_minimization_2d(gam, v)
 % Minimize (w.r.t. lambda) the "posterior L2 error" of the LA diagnostic
 % when applied to a bivariate T density with v degrees of freedom, given
