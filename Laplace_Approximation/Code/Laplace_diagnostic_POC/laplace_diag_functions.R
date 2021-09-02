@@ -116,17 +116,15 @@ tail_checker = function(outliers, logf, logf_at_mode, T_mat, mode, sigma = 1,
     out_norm = sqrt(sum(out_cent^2))
     out_dir = out_cent/out_norm # Unit vector in the direction of out_cent
     # Scale and rotate out_dir by T_mat (see Sec. 4.1 of manuscript)
-    out_vec = T_mat %*% out_dird
+    out_vec = T_mat %*% out_dir
     
     # Check starts at the outlier itself and goes WAAAAAAY out into the tail
     eval_grid = seq(floor(out_norm), 1000, by = 5)
     # Divide both $f^2$ and normal density by their values at mode for numerical convenience
-    diff_logs = rep(dmvn(as.numeric(mode), sigma = scale_mat, mu = as.numeric(mode), log = TRUE),
-                    length(eval_grid))
+    diff_logs = rep(dmvn(mode, sigma = scale_mat, mu = mode, log = TRUE), length(eval_grid))
     for(j in seq_along(eval_grid)){
       diff_logs[j] = diff_logs[j] + 2*(logf(eval_grid[j]*out_vec + mode) - logf_at_mode) -
-        dmvn(as.numeric(eval_grid[j]*out_vec + mode), sigma = scale_mat, mu = as.numeric(mode),
-             log = TRUE)
+        dmvn(eval_grid[j]*out_vec + mode, sigma = scale_mat, mu = mode, log = TRUE)
     }
     tails[[i]] = diff_logs[!is.nan(diff_logs)] # logf may give NaN's for values way out in tails
     
@@ -145,8 +143,8 @@ tail_checker = function(outliers, logf, logf_at_mode, T_mat, mode, sigma = 1,
 }
 
 
-imp_sampler_t = function(N, nu, logf, logf_at_mode, T_mat, mode,
-                         scale_mat = sigma^2*T_mat%*%t(T_mat), num_outliers = 10, sigma = 1){
+imp_sampler_t = function(N, nu, logf, logf_at_mode, T_mat, mode, sigma = 1,
+                         scale_mat = sigma^2*T_mat%*%t(T_mat), num_outliers = 10){
   # Generates importance weights to estimate $\int f(x) \mathrm{d}x$ using a multivariate
   # T distribution as the proposal. Also checks tail behaviour in directions of samples
   # for which weights are large
@@ -164,13 +162,12 @@ imp_sampler_t = function(N, nu, logf, logf_at_mode, T_mat, mode,
 
   tops = which(weights > quantile(weights, 1-num_outliers/N, na.rm = TRUE))
   outliers = t(X[tops,])
-  
   # Get rid of X to free up memory
   rm(X)
   gc()
   
   # Check tail behaviour in directions of outliers
-  tail_checker(outliers, logf, logf_at_mode, scale_mat, T_mat, mode)
+  tail_checker(outliers, logf, logf_at_mode, T_mat, mode, sigma, scale_mat)
   
   return(weights)
 }
@@ -204,10 +201,9 @@ imp_sampler_parallel = function(N, nu, logf, logf_at_mode, T_mat, mode, splitup 
   for(i in 1:splitup){
     weights = c(weights,
                 pvec(1:(N/splitup),
-                     function(x) imp_sampler_t(length(x), nu, logf, logf_at_mode, scale_mat,
-                                               T_mat, mode, num_outliers, sigma),
-                     mc.cores = cores))
-  
+                     function(x) imp_sampler_t(length(x), nu, logf, logf_at_mode, T_mat,
+                                               mode, sigma, scale_mat, num_outliers),
+                     mc.cores = cores))  
     gc() # You can never have too much memory
   }
   time = proc.time() - start
