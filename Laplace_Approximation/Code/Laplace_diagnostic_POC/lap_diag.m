@@ -69,10 +69,12 @@ else
     end
 end
 
+lap_app = exp(logdet_T + logf_at_mode + d*log(2*pi)/2);
+post_mean = Q + lap_app;
+post_var = wce^2*exp(2*(logf_at_mode + logdet_T) - d*log(alph));
+
 % Plot
 if should_plot
-    post_mean = Q + lap_app;
-    post_var = wce^2*exp(2*(logf_at_mode + logdet_T) - d*log(alph));
     lower_bound = min([norminv(0.025, post_mean, sqrt(post_var)) lap_app]);
     upper_bound = max([norminv(0.975, post_mean, sqrt(post_var)) lap_app]);
     lap_dist = fplot(@(x) normpdf(x, post_mean, sqrt(post_var)),...
