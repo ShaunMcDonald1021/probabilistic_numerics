@@ -7,7 +7,7 @@ Laplace_Approximation/Charlie_work
 *.log
 *.aux
 .Rproj.user
-fskq-master
+*fskq*
 *.RData
 *.Rdata
 *.rdata
