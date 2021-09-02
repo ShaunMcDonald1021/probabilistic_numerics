@@ -1,5 +1,5 @@
-function [post_mean, w, wce, alph]...
-    = diag_calib(gam, lambda, s_star, Us, d, v)
+function [post_mean, w, wce, alph] = diag_calib(gam, lambda, s_star, Us, d, v)
+
 
 logf_inter = log(mvtpdf(s_star.*sqrt(v/(v+d)), eye(d), v));
 logf_at_mode = (gammaln((v+d)/2) - gammaln(v/2) - d*log(v*pi)/2);

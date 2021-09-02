@@ -1,19 +1,24 @@
 function [post_mean, post_var]...
     = lap_diag(logf_inter, logf_at_mode, Us, s_star, logdet_T, d,...
-    gam, lambda, alph, lap_app)
+    gam, alph, lap_app, wce, w)
 
 Y = exp(d*log(gam)+logdet_T)*...
     (exp(logf_inter -log(mvnpdf(s_star/gam)))-...
     (2*pi)^d*exp(logf_at_mode + log(mvnpdf(sqrt(gam^2-1)*s_star/gam))));
 
-k = @(r)exp(-r.^2/(2*lambda^2));
-kmean = @(x)(lambda^2/(gam^2+lambda^2))^(d/2)*...
-    exp(-norm(x)^2/(2*(gam^2+lambda^2)));
-Ikmean = (lambda^2/(2*gam^2 + lambda^2))^(d/2);
-
-[Q, wce, w] = kq_fss(Y, Us, k, kmean, Ikmean);
-disp(w)
-post_mean = Q + lap_app;
+% This part stolen from the kq_fss source code
+% Compute the FSSKQ approximation
+  Q = 0;
+  J = length(w);
+  Ls = zeros(J,1);
+  ind = 0;
+  for i = 1:J
+    Ls(i) = size(Us{i}, 2);
+    Q = Q + w(i) * sum(Y(ind+1:ind+Ls(i)));
+    ind = ind + Ls(i);
+  end
+  
+  post_mean = Q + lap_app;
 
 post_var = wce^2*exp(2*(logf_at_mode + logdet_T) - d*log(alph));
 
