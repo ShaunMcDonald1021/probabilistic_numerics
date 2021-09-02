@@ -84,7 +84,7 @@ save.image('1970_stuff.RData')
 rm(list = grep('1970', ls(), value = TRUE))
 gc()
 
-#### 1972 model ####
+#### 2005 model ####
 # Same things as for the 1970 model
 dat2005 = reduce(nscodData, year = c(1963:2004, 2011:2015), conf = nscodConf)
 conf2005 = attr(dat2005, 'conf')
