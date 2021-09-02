@@ -164,7 +164,6 @@ imp_sampler_t = function(N, nu, logf, logf_at_mode, T_mat, mode, sigma = 1,
 
   tops = which(weights > quantile(weights, 1-num_outliers/N, na.rm = TRUE))
   outliers = t(X[tops,])
-  
   # Get rid of X to free up memory
   rm(X)
   gc()
@@ -206,8 +205,8 @@ imp_sampler_parallel = function(N, nu, logf, logf_at_mode, T_mat, mode, splitup 
                 pvec(1:(N/splitup),
                      function(x) imp_sampler_t(length(x), nu, logf, logf_at_mode, T_mat,
                                                mode, sigma, scale_mat, num_outliers),
-                     mc.cores = cores))
-  gc() # You can never have too much memory
+                     mc.cores = cores))  
+    gc() # You can never have too much memory
   }
   time = proc.time() - start
   
