@@ -30,7 +30,7 @@ if exist('fskq', 'dir') == 0
 end
 
 % Calculate s_star if it wasn't supplied already
-if numel(varargin) == 5
+if nargin == 5
     s_star = cell2mat(Us)';
 end
 

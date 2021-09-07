@@ -38,7 +38,7 @@ if exist('fskq', 'dir') == 0
 end
 
 % Calculate s_star if it wasn't supplied already
-if numel(varargin) < 12
+if nargin < 12
     s_star = cell2mat(Us)';
 end
 
@@ -63,9 +63,9 @@ else
     Ls = zeros(J,1);
     ind = 0;
     for i = 1:J
-    Ls(i) = size(Us{i}, 2);
-    Q = Q + w_or_lambda(i) * sum(Y(ind+1:ind+Ls(i)));
-    ind = ind + Ls(i);
+        Ls(i) = size(Us{i}, 2);
+        Q = Q + w_or_lambda(i) * sum(Y(ind+1:ind+Ls(i)));
+        ind = ind + Ls(i);
     end
 end
 
