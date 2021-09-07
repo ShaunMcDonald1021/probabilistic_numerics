@@ -135,8 +135,14 @@ tail_checker = function(outliers, logf, logf_at_mode, T_mat, mode, sigma = 1,
   if(all(is_decreasing) & all(is_zero)){
     print('Tails in directions of outliers look okay')
   } else{
-    if(!all(is_decreasing)) print('One of the tails does not monotonically decrease')
-    if(!all(is_zero)) print('One of the tails does not decay to zero')
+    if(!all(is_decreasing)){
+      print('One of the tails does not monotonically decrease')
+      lapply(tails[!is_decreasing], function(x) print(diff(tail(x, deccheck))))
+    }
+    if(!all(is_zero)) {
+      print('One of the tails does not decay to zero')
+      lapply(tails[!is_zero], function(x) print(exp(tail(x, zerocheck))))
+    }
   }
   
   #return(list(tails = tails, is_decreasing = is_decreasing, is_zero = is_zero))
