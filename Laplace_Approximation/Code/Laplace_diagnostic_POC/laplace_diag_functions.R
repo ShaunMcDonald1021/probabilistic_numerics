@@ -204,7 +204,7 @@ imp_sampler_parallel = function(N, nu, logf, logf_at_mode, T_mat, mode, splitup 
                      function(x) imp_sampler_t(length(x), nu, logf, logf_at_mode, T_mat,
                                                mode, sigma, scale_mat, num_outliers),
                      mc.cores = cores))
-    .Random.seed = nextRNGStream(.Random.seed) # Otherwise, each call to pvec will give identical results
+    .Random.seed = nextRNGSubStream(.Random.seed) # Otherwise we get repeated weights from multiple pvec calls
   }
   time = proc.time() - start
   
