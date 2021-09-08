@@ -135,8 +135,20 @@ tail_checker = function(outliers, logf, logf_at_mode, T_mat, mode, sigma = 1,
   if(all(is_decreasing) & all(is_zero)){
     print('Tails in directions of outliers look okay')
   } else{
-    if(!all(is_decreasing)) print('One of the tails does not monotonically decrease')
-    if(!all(is_zero)) print('One of the tails does not decay to zero')
+    if(!all(is_decreasing)){
+      print('Some tails do not monotonically decrease')
+      print('Outlier sample(s):')
+      print(outliers[,!is_decreasing])
+      print('Diffs in tail(s):')
+      lapply(tails[!is_decreasing], function(x) print(diff(tail(x, deccheck))))
+    }
+    if(!all(is_zero)) {
+      print('Some tails do not decay to zero')
+      print('Outlier sample(s):')
+      print(outliers[,!is_zero])
+      print('Tail(s):')
+      lapply(tails[!is_zero], function(x) print(exp(tail(x, zerocheck))))
+    }
   }
   
   #return(list(tails = tails, is_decreasing = is_decreasing, is_zero = is_zero))
@@ -204,7 +216,8 @@ imp_sampler_parallel = function(N, nu, logf, logf_at_mode, T_mat, mode, splitup 
                      function(x) imp_sampler_t(length(x), nu, logf, logf_at_mode, T_mat,
                                                mode, sigma, scale_mat, num_outliers),
                      mc.cores = cores))
-    .Random.seed = nextRNGStream(.Random.seed) # Otherwise, each call to pvec will give identical results
+    assign('.Random.seed', nextRNGSubStream(.Random.seed), pos = .GlobalEnv) 
+    # Otherwise we get repeated weights from multiple pvec calls
   }
   time = proc.time() - start
   
