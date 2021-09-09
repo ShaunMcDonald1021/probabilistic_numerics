@@ -95,7 +95,7 @@ tail_checker = function(outliers, logf, logf_at_mode, T_mat, mode, sigma = 1,
   # the importance weight w(x) is large, this function checks if the tail of $f^2$ decays
   # faster than a Gaussian density in the direction of x (from the mode).
   # This provides *some* empircal assurance that the importance sampler has finite variance.
-
+  
   # outliers: d-by-n matrix of n vectors in $\mathbb{R}^d$, corresponding to the samples
   # which gave the largest importance weights
   # logf, logf_at_mode, T_mat, mode are as in lap_diag_from_tmb
@@ -135,8 +135,20 @@ tail_checker = function(outliers, logf, logf_at_mode, T_mat, mode, sigma = 1,
   if(all(is_decreasing) & all(is_zero)){
     print('Tails in directions of outliers look okay')
   } else{
-    if(!all(is_decreasing)) print('One of the tails does not monotonically decrease')
-    if(!all(is_zero)) print('One of the tails does not decay to zero')
+    if(!all(is_decreasing)){
+      print('Some tails do not monotonically decrease')
+      print('Outlier sample(s):')
+      print(apply(outliers[,!is_decreasing], 2, function(x) paste(x, collapse = ", ")))
+      print('Diffs in tail(s):')
+      lapply(tails[!is_decreasing], function(x) print(diff(tail(x, deccheck))))
+    }
+    if(!all(is_zero)) {
+      print('Some tails do not decay to zero')
+      print('Outlier sample(s):')
+      print(apply(outliers[,!is_zero], 2, function(x) paste(x, collapse = ", ")))
+      print('Tail(s):')
+      lapply(tails[!is_zero], function(x) print(exp(tail(x, zerocheck))))
+    }
   }
   
   #return(list(tails = tails, is_decreasing = is_decreasing, is_zero = is_zero))
@@ -159,7 +171,7 @@ imp_sampler_t = function(N, nu, logf, logf_at_mode, T_mat, mode, sigma = 1,
   
   X = rmvt(N, sigma = scale_mat, df = nu, mu = mode)
   weights = exp(apply(X, 1, logf) - dmvt(X, sigma = scale_mat, df = nu, mu = mode, log = TRUE))
-
+  
   tops = which(weights > quantile(weights, 1-num_outliers/N, na.rm = TRUE))
   outliers = t(X[tops,])
   # Get rid of X to free up memory
@@ -204,7 +216,8 @@ imp_sampler_parallel = function(N, nu, logf, logf_at_mode, T_mat, mode, splitup 
                      function(x) imp_sampler_t(length(x), nu, logf, logf_at_mode, T_mat,
                                                mode, sigma, scale_mat, num_outliers),
                      mc.cores = cores))
-    .Random.seed = nextRNGStream(.Random.seed) # Otherwise, each call to pvec will give identical results
+    assign('.Random.seed', nextRNGSubStream(.Random.seed), pos = .GlobalEnv) 
+    # Otherwise we get repeated weights from multiple pvec calls
   }
   time = proc.time() - start
   
@@ -255,4 +268,3 @@ imp_score_test = function(weights, thresh){
   score_stat = xi_score(0.5, beta_hat, Z)/sqrt(2*length(Z))
   return(list(score_stat = score_stat, beta_hat = beta_hat))
 }
-  
