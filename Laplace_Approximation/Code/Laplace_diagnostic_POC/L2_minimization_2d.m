@@ -26,14 +26,10 @@ inv_hess_at_mode = -diag(repelem(v/(v+d), d));
 % gives you
 g = @(x) mvnpdf(x, zeros([1 d]), -gam^2*inv_hess_at_mode);
 
-% Prior mean function for GP
-mx_0 = @(x) gauss_approx(x)./g(x);
-
 % Preliminary grid used in Section 5.1 of manuscript (eqn. (19))
 s_star = [[-3:3 zeros([1 6])]; [zeros([1 7]) -3:-1 1:3]]';
 s = s_star/sqrt(-hess_at_mode(1,1));
-
-interrs = (tau(s)./g(s)) - mx_0(s);
+interrs = (tau(s) - gauss_approx(s))./g(s);
 
 % Set up grid for Riemann sum approximation to L2 integral
 delta = 0.005;
@@ -71,12 +67,12 @@ function [L2, dL2] = L2_with_grad(l)
 end
 
 % Find optimal lambda
-% For gam = sqrt(1.5*(v+d)/(v+d-3) it ends up being 4.2240. The optimizer
+% For gam = sqrt(1.5*(v+d)/(v+d-3) it ends up being ~4.2241. The optimizer
 % doesn't seem to work with initial values higher than this, but L2 and dL2
-% were both larger for the values of l > 4.2240 that I tried
+% were both larger for the values of l > 4.2241 that I tried
 [lambda,~, ~, ~, ~, ~] = fminunc(@(l) L2_with_grad(l), 1,...
     optimoptions('fminunc', 'CheckGradients', true,...
-    'FiniteDifferenceType', 'central', 'OptimalityTolerance', 1e-10,...
+    'FiniteDifferenceType', 'central', 'OptimalityTolerance', 1e-12,...
     'StepTolerance', 1e-9, 'Display', 'iter-detailed',...
     'SpecifyObjectiveGradient', true));
 end
