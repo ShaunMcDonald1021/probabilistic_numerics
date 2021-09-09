@@ -1,17 +1,18 @@
 function [mode, f_sym, f_at_mode, hess_at_mode, args] =...
     laplace_ingredients(f, d, should_prompt)
 
-% Uses symbolic toolkit to produce necessary ingredients for Laplace
-% approximation of a function.
+% Uses symbolic toolkit to produce the necessary ingredients for Laplace
+% approximation of a function. Symbolic math can be SLOW, so in practice
+% this is only useful for relatively simple low-dimensional examples.
 
 % INPUTS:
-% f: an anonymous function handle for the full function from R^d -> R.
+% f: an anonymous function handle for the integrand from R^d -> R.
 % It must take a single array-valued argument: a vertical concatenation
 % of d-dimensional row vectors.
 % d: dimension of the domain.
 % should_prompt: logical indicating whether or not to prompt the user to
-% input f_sym themselves. This may be a good idea in some applications (see
-% below), but should be turned off for the interactive apps.
+% input f_sym themselves. This is more convenient in some applications
+% (see below)
 
 % OUTPUTS:
 % mode: The location in the domain of the chosen mode (1xd sym row vector).
@@ -26,8 +27,8 @@ assumeAlso(args, 'real');
 
 % Some target functions are inherently piecewise (e.g. things supported
 % only on nonnegative numbers, like gamma pdf's). Conversion between
-% symfun's and anonymous function handles doesn't work properly in this
-% case, so we prompt the user to input their own f_sym.
+% symfuns and anonymous function handles doesn't work properly in this
+% case, so we can prompt the user to input their own f_sym.
 if should_prompt
     f_sym = input(join(['Optional entry of symbolic version of f.' newline...
         'Press ENTER to skip, in which case it is created automatically.'...
