@@ -13,3 +13,4 @@ Laplace_Approximation/Charlie_work
 *.Rdata
 *.rdata
 *.txt
+*importance_sampling.R

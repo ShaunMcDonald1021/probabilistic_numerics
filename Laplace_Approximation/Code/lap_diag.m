@@ -9,7 +9,8 @@ function [post_mean, post_var]...
 % logf_inter: logs of interrogation values $\log f(\boldsymbol{s})$. Should
 % be n*1 (column) vector
 % logf_at_mode: $\log f(\hat{x})$: function value at mode on log scale
-% logdet_T: log of determinant of T matrix (see Section 4.1 of manuscript)
+% logdet_T: log of determinant of T matrix, obtained from eigen-
+% decomposition of the Hessian (see Section 4.1 of manuscript)
 % d: dimensionality
 % gam, alph: hyperparameters $\gamma$ and $\alpha$ respectively.
 % w_or_lambda: either a vector of BQ weights (e.g. precomputed with
