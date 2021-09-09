@@ -11,3 +11,7 @@ Us = fss_gen(s_star([1 73],:)');
 
 [post_mean, post_var] = lap_diag(logf_interrs, logf_at_mode, log_T_det,...
     d, gam, alph, w, true, true, Us, wce, s_star);
+
+load('2005_diag.mat')
+[post_mean, post_var] = lap_diag(logf_interrs, logf_at_mode, log_T_det,...
+    d, gam, alph, w, true, true, Us, wce, s_star);

@@ -1,13 +1,25 @@
+% Demo code for Section 6 of the manuscript. Applies the diagnostic in 2
+% dimensions to a "banana-shaped" function using "optimal" hyperparameters
+% (see Section 5.1 of manuscript). Note that, unlike the lap_diag and
+% diag_calib functions, this demo doesn't require FSKQ (Karvonen et al.
+% 2018): the interrogation grid is small enough that we can calculate the
+% integral weights directly, without exploiting symmetry.
+
 d = 2;
+% Hyperparameter values as in Section 5.1 of manuscript
 lambda = 2.9224;
-gam = 1.2734;
+gam = sqrt(1.5*40/37);
 alph = 0.0793;
 
+% Banana function ($\beta$ in manuscript)
 f = @(x) mvnpdf([x(:,1) x(:,2) - (x(:,1).^2 - 3)/2], [], diag([3 1]));
+% Can use laplace_poc to verify the mode and Hessian
 mode = [0 -1.5];
 hess_at_mode = diag([-1/3 -1]);
 f_at_mode = f(mode);
-gauss_approx = @(x) f_at_mode*exp(sum(((x-mode)*hess_at_mode).*(x-mode),2)/2);
+
+gauss_approx = @(x) f_at_mode*exp(sum(((x-mode)*hess_at_mode).*...
+    (x-mode),2)/2);
 g = @(x) mvnpdf(x, mode, -gam^2*inv(hess_at_mode));
 s_star = [[-3:3 zeros([1 6])]; [zeros([1 7]) -3:-1 1:3]]';
 mah_dist_s = pdist2(s_star, s_star);
