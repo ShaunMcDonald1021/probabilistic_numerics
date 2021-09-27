@@ -10,7 +10,7 @@ d = 2;
 % Feel free to change these to see what the effect is
 lambda = 4.2241;
 gam = sqrt(1.5*(38+d)/(38+d-2));
-alph = 0.0793;
+alph = 0.023142;
 
 % Banana function ($\beta$ in manuscript)
 f = @(x) mvnpdf([x(:,1) x(:,2) - (x(:,1).^2 - 3)/2], [], diag([3 1]));
