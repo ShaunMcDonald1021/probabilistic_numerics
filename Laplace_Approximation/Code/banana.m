@@ -7,8 +7,9 @@
 
 d = 2;
 % Hyperparameter values as in Section 5.1 of manuscript
+% Feel free to change these to see what the effect is
 lambda = 4.2241;
-gam = sqrt(1.5*40/37);
+gam = sqrt(1.5*(38+d)/(38+d-2));
 alph = 0.0793;
 
 % Banana function ($\beta$ in manuscript)
