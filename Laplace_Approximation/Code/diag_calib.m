@@ -24,7 +24,7 @@ function [post_mean, w, wce, alph] =...
 % alph: the precision hyperparameter, calculated to put the test fn on the
 % boundary of rejection
 
-% First, make sure fskq is on math
+% First, make sure fskq is on path
 if exist('fskq', 'dir') == 0
     addpath('fskq')
 end

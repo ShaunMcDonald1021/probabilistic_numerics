@@ -33,7 +33,7 @@ function [post_mean, post_var]...
 % OUTPUTS:
 % post_mean, post_var: posterior integral mean and variance, respectively
 
-% First, make sure fskq is on math
+% First, make sure fskq is on path
 if exist('fskq', 'dir') == 0
     addpath('fskq')
 end
