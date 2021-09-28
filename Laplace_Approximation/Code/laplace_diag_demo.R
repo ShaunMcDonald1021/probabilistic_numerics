@@ -150,6 +150,7 @@ for(i in 1:100){
   large_checkcon_times2005[i] = proc.time()[3] - large_start
   large_checkcon_pvals2005[i] = summary(large_checkcon)$marginal$p.value
   
+  component_time = lap_diag_from_tmb(fit_2005)$time
   diag_start = proc.time()[3]
   s_star = cbind(numeric(d), diag(sqrt(d), d), diag(-sqrt(d), d))
   s_star[,2:(d+1)] = s_star[,(d+1):2]
