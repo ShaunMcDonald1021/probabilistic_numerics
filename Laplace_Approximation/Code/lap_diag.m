@@ -33,7 +33,7 @@ function [post_mean, post_var]...
 % OUTPUTS:
 % post_mean, post_var: posterior integral mean and variance, respectively
 
-% First, make sure fskq is on math
+% First, make sure fskq is on path
 if exist('fskq', 'dir') == 0
     addpath('fskq')
 end
@@ -44,9 +44,9 @@ if nargin < 12
 end
 
 % Re-weight interrogations and subtract prior mean interrogation values
-Y = exp(d*log(gam)+logdet_T)*...
-    (exp(logf_inter - log(mvnpdf(s_star/gam)))-...
-    (2*pi)^d*exp(logf_at_mode + log(mvnpdf(sqrt(gam^2-1)*s_star/gam))));
+Y = exp(d*log(gam) + logdet_T + logf_inter - log(mvnpdf(s_star/gam)))-...
+    exp(d*log(2*pi*gam) + logdet_T + logf_at_mode +...
+    log(mvnpdf(sqrt(gam^2-1)*s_star/gam)));
 
 % Calculate BQ weights and wce if not precomputed
 if ~is_w

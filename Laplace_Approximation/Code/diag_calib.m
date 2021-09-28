@@ -24,7 +24,7 @@ function [post_mean, w, wce, alph] =...
 % alph: the precision hyperparameter, calculated to put the test fn on the
 % boundary of rejection
 
-% First, make sure fskq is on math
+% First, make sure fskq is on path
 if exist('fskq', 'dir') == 0
     addpath('fskq')
 end
@@ -40,9 +40,9 @@ logdet_T = d*log(v/(v+d))/2;
 lap_app = exp(logdet_T + logf_at_mode + d*log(2*pi)/2);
 
 % Re-weight interrogations and subtract prior mean interrogation values
-Y = exp(d*log(gam)+logdet_T)*...
-    (exp(logf_inter -log(mvnpdf(s_star/gam)))-...
-    (2*pi)^d*exp(logf_at_mode + log(mvnpdf(sqrt(gam^2-1)*s_star/gam))));
+Y = exp(d*log(gam) + logdet_T + logf_inter - log(mvnpdf(s_star/gam)))-...
+    exp(d*log(2*pi*gam) + logdet_T + logf_at_mode +...
+    log(mvnpdf(sqrt(gam^2-1)*s_star/gam)));
 
 % Kernel stuff
 k = @(r)exp(-r.^2/(2*lambda^2));
