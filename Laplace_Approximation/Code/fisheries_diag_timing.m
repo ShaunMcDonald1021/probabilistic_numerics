@@ -5,6 +5,7 @@
 % GH_stuff_timing.m and fisheries_demo.R have been ran (in that order).
 load('1970_demo_stuff.mat')
 load('2005_demo_stuff.mat')
+load('GH_times.mat')
 
 times_1970 = zeros([1 100]);
 times_1970_GH = zeros([1 100]);
@@ -51,7 +52,7 @@ for i = 1:100
     [~, w, wce, alph] = diag_calib(gam, lambda_GH, d, v, Us_GH, s_star_GH);
     [post_mean, post_var] = lap_diag(logf_interrs, logf_at_mode,...
         log_T_det, d, gam, alph, w, true, false, Us_GH, wce, s_star_GH);
-    times_1970_GH(i) = toc + diag_times1970_GH(i);
+    times_1970_GH(i) = toc + diag_times1970_GH(i) + GH_times(i);
     
     tic
     load('2005_diag_GH.mat')
@@ -59,7 +60,7 @@ for i = 1:100
     [~, w, wce, alph] = diag_calib(gam, lambda_GH, d, v, Us_GH, s_star_GH);
     [post_mean, post_var] = lap_diag(logf_interrs, logf_at_mode,...
         log_T_det, d, gam, alph, w, true, false, Us_GH, wce, s_star_GH);
-    times_2005_GH(i) = toc + diag_times2005_GH(i);
+    times_2005_GH(i) = toc + diag_times2005_GH(i) + GH_times(i);
 end
 
 save('diag_times.mat', 'times_1970', 'times_1970_GH', 'times_2005',...
