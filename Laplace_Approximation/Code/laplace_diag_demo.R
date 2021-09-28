@@ -60,13 +60,13 @@ diag_times1970_GH = numeric(100) # Time for diagnostic w/Gauss-Hermite grid
 for(i in 1:100){
   small_start = proc.time()[3]
   small_checkcon = checkConsistency(fit_1970, par = diag_1970$theta, n = 100)
-  small_checkcon_times1970[i] = proc.time()[3] - small_start
   small_checkcon_pvals1970[i] = summary(small_checkcon)$marginal$p.value
+  small_checkcon_times1970[i] = proc.time()[3] - small_start
   
   large_start = proc.time()[3]
   large_checkcon = checkConsistency(fit_1970, par = diag_1970$theta, n = 1000)
-  large_checkcon_times1970[i] = proc.time()[3] - large_start
   large_checkcon_pvals1970[i] = summary(large_checkcon)$marginal$p.value
+  large_checkcon_times1970[i] = proc.time()[3] - large_start
   
   # Recalculate diagnostic components for more accurate estimates of
   # variability in computation time
@@ -83,10 +83,10 @@ for(i in 1:100){
   
   # Repeat for the GH grid
   diag_start = proc.time()[3]
-  GH_stuff = read.mat('s_star.mat')
-  logf_interrs_1970 = get_log_interrs(diag_1970$logf, diag_1970$T_mat, diag_1970$mode, s_star,
+  GH_stuff = read.mat('GH_stuff.mat')
+  logf_interrs_1970 = get_log_interrs(diag_1970$logf, diag_1970$T_mat, diag_1970$mode, GH_stuff$s_star,
                                       TRUE, diag_1970$logf_at_mode, diag_1970$log_T_det, '1970_diag_GH.mat')
-  diag_times_1970_GH[i] = proc.time()[3] - diag_start + component_time
+  diag_times_1970_GH[i] = proc.time()[3] - diag_start + component_time + GH_stuff$time[i]
   
   print(paste('Diagnostic replication', i, 'done for 1970 model'))
 }
@@ -142,13 +142,13 @@ diag_times2005_GH = numeric(100)
 for(i in 1:100){
   small_start = proc.time()[3]
   small_checkcon = checkConsistency(fit_2005, par = diag_2005$theta, n = 100)
-  small_checkcon_times2005[i] = proc.time()[3] - small_start
   small_checkcon_pvals2005[i] = summary(small_checkcon)$marginal$p.value
+  small_checkcon_times2005[i] = proc.time()[3] - small_start
   
   large_start = proc.time()[3]
   large_checkcon = checkConsistency(fit_2005, par = diag_2005$theta, n = 1000)
-  large_checkcon_times2005[i] = proc.time()[3] - large_start
   large_checkcon_pvals2005[i] = summary(large_checkcon)$marginal$p.value
+  large_checkcon_times2005[i] = proc.time()[3] - large_start
   
   component_time = lap_diag_from_tmb(fit_2005)$time
   diag_start = proc.time()[3]
@@ -162,10 +162,10 @@ for(i in 1:100){
   
   # Repeat for the GH grid
   diag_start = proc.time()[3]
-  GH_stuff = read.mat('s_star.mat')
-  logf_interrs_2005 = get_log_interrs(diag_2005$logf, diag_2005$T_mat, diag_2005$mode, s_star,
+  GH_stuff = read.mat('GH_stuff.mat')
+  logf_interrs_2005 = get_log_interrs(diag_2005$logf, diag_2005$T_mat, diag_2005$mode, GH_stuff$s_star,
                                       TRUE, diag_2005$logf_at_mode, diag_2005$log_T_det, '2005_diag_GH.mat')
-  diag_times_2005_GH[i] = proc.time()[3] - diag_start + component_time
+  diag_times_2005_GH[i] = proc.time()[3] - diag_start + component_time + GH_stuff$time[i]
   
   print(paste('Diagnostic replication', i, 'done for 2005 model'))
 }
