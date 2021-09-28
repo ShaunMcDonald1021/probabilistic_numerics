@@ -3,6 +3,7 @@ v = 25921;
 gam = sqrt(1.5*(v+d)/(v+d-3));
 lambda = 3.7;
 
+tic
 load('1970_diag.mat')
 s_star = s_star';
 logf_interrs = logf_interrs';
@@ -11,7 +12,10 @@ Us = fss_gen(s_star([1 73],:)');
 
 [post_mean, post_var] = lap_diag(logf_interrs, logf_at_mode, log_T_det,...
     d, gam, alph, w, true, true, Us, wce, s_star);
+toc
 
 load('2005_diag.mat')
+s_star = s_star';
+logf_interrs = logf_interrs';
 [post_mean, post_var] = lap_diag(logf_interrs, logf_at_mode, log_T_det,...
     d, gam, alph, w, true, true, Us, wce, s_star);
