@@ -1,6 +1,7 @@
 # Code for stock assessment experiments as shown in Laplace diagnostic manuscript
 # NOTE: this demo is designed for Unix systems. The importance sampler uses forking
-# and WILL NOT WORK IN WINDOWS unless you manually change the number of cores to 1
+# and WILL NOT WORK IN WINDOWS unless you manually change the number of cores to 1.
+# Make sure GH_stuff_timing.mat has been ran before running this
 
 # Assuming you run this demo from the same location where laplace_diag_functions.R is.
 # If not, change the below line accordingly
@@ -86,16 +87,16 @@ for(i in 1:100){
   GH_stuff = read.mat('GH_stuff.mat')
   logf_interrs_1970 = get_log_interrs(diag_1970$logf, diag_1970$T_mat, diag_1970$mode, GH_stuff$s_star,
                                       TRUE, diag_1970$logf_at_mode, diag_1970$log_T_det, '1970_diag_GH.mat')
-  diag_times_1970_GH[i] = proc.time()[3] - diag_start + component_time + GH_stuff$time[i]
+  diag_times1970_GH[i] = proc.time()[3] - diag_start + component_time + GH_stuff$time
   
   print(paste('Diagnostic replication', i, 'done for 1970 model'))
 }
 
 save.image('1970_stuff.RData')
 write.mat(list(imp_means = unlist(lapply(imp_list_1970, '[[', 'mean')),
-               imp_vars = unlist(lapply(imp_list_1970, '[[', 'var')), diag_times = diag_times1970,
-               diag_times_GH = diag_times_1970_GH,small_pvals = small_checkcon_pvals1970,
-               large_pvals = large_checkcon_pvals1970))
+               imp_vars = unlist(lapply(imp_list_1970, '[[', 'var')), diag_times1970 = diag_times1970,
+               diag_times1970_GH = diag_times1970_GH, small_pvals = small_checkcon_pvals1970,
+               large_pvals = large_checkcon_pvals1970), filename = '1970_demo_stuff.mat')
 
 # Get rid of all the 1970 stuff to save space
 rm(list = grep('1970', ls(), value = TRUE))
@@ -165,13 +166,13 @@ for(i in 1:100){
   GH_stuff = read.mat('GH_stuff.mat')
   logf_interrs_2005 = get_log_interrs(diag_2005$logf, diag_2005$T_mat, diag_2005$mode, GH_stuff$s_star,
                                       TRUE, diag_2005$logf_at_mode, diag_2005$log_T_det, '2005_diag_GH.mat')
-  diag_times_2005_GH[i] = proc.time()[3] - diag_start + component_time + GH_stuff$time[i]
+  diag_times2005_GH[i] = proc.time()[3] - diag_start + component_time + GH_stuff$time
   
   print(paste('Diagnostic replication', i, 'done for 2005 model'))
 }
 
 save.image('2005_stuff.RData')
 write.mat(list(imp_means = unlist(lapply(imp_list_2005, '[[', 'mean')),
-               imp_vars = unlist(lapply(imp_list_2005, '[[', 'var')), diag_times = diag_times2005,
-               diag_times_GH = diag_times_2005_GH,small_pvals = small_checkcon_pvals2005,
-               large_pvals = large_checkcon_pvals2005))
+               imp_vars = unlist(lapply(imp_list_2005, '[[', 'var')), diag_times2005 = diag_times2005,
+               diag_times2005_GH = diag_times2005_GH, small_pvals = small_checkcon_pvals2005,
+               large_pvals = large_checkcon_pvals2005), filename = '2005_demo_stuff.mat')
