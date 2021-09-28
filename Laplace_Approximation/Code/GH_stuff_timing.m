@@ -5,11 +5,6 @@
 % grid. Make sure you download FSKQ prior to running this (see README).
 % Note also that this is heavily based on part of demo.m from that repo.
 
-% Add FSKQ to path if it's not already there
-if exist('fskq', 'dir') == 0
-    addpath('fskq')
-end
-
 GH_times = zeros([1 100]);
 d = 72;
 for i = 1:100

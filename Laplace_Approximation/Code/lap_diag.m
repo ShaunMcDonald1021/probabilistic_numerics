@@ -33,11 +33,6 @@ function [post_mean, post_var]...
 % OUTPUTS:
 % post_mean, post_var: posterior integral mean and variance, respectively
 
-% First, make sure fskq is on path
-if exist('fskq', 'dir') == 0
-    addpath('fskq')
-end
-
 % Calculate s_star if it wasn't supplied already
 if nargin < 12
     s_star = cell2mat(Us)';
