@@ -119,7 +119,7 @@ tail_checker = function(outliers, logf, logf_at_mode, T_mat, mode, sigma = 1,
     out_vec = as.numeric(T_mat %*% out_dir)
     
     # Check starts at the outlier itself and goes WAAAAAAY out into the tail
-    eval_grid = seq(floor(out_norm), 1000, by = 5)
+    eval_grid = seq(floor(out_norm), 1500, by = 5)
     # Divide both $f^2$ and normal density by their values at mode for numerical convenience
     diff_logs = rep(dmvn(mode, sigma = scale_mat, mu = mode, log = TRUE), length(eval_grid))
     for(j in seq_along(eval_grid)){
