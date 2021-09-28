@@ -48,12 +48,13 @@ for(i in rev(seq_along(samp_sizes))){
 
 # Repeatedly run and time various Laplace diagnostics:
 # checkConsistency with a small number of samples (100) and a large number (1000),
-# as well as our BQ diagnostic
+# as well as our BQ diagnostic with two different interrogation grids
 small_checkcon_times1970 = numeric(100)
 small_checkcon_pvals1970 = numeric(100)
 large_checkcon_times1970 = numeric(100)
 large_checkcon_pvals1970 = numeric(100)
-diag_times1970 = numeric(100)
+diag_times1970 = numeric(100) # Time for diagnostic w/CKF grid
+diag_times1970_GH = numeric(100) # Time for diagnostic w/Gauss-Hermite grid
 
 # Repetition legitimizes
 for(i in 1:100){
@@ -67,19 +68,34 @@ for(i in 1:100){
   large_checkcon_times1970[i] = proc.time()[3] - large_start
   large_checkcon_pvals1970[i] = summary(large_checkcon)$marginal$p.value
   
+  # Recalculate diagnostic components for more accurate estimates of
+  # variability in computation time
+  component_time = lap_diag_from_tmb(fit_1970)$time
+  
   diag_start = proc.time()[3]
   s_star = cbind(numeric(d), diag(sqrt(d), d), diag(-sqrt(d), d))
   s_star[,2:(d+1)] = s_star[,(d+1):2]
   logf_interrs_1970 = get_log_interrs(diag_1970$logf, diag_1970$T_mat, diag_1970$mode, s_star,
                                       TRUE, diag_1970$logf_at_mode, diag_1970$log_T_det, '1970_diag.mat')
   # This is somewhat inefficient, but saving the interrogation values is certainly part of
-  # the computational cost so it should be timed as well)
-  diag_times1970[i] = proc.time()[3] - diag_start + diag_1970$eig_time[3]
+  # the computational cost so it should be timed as well.
+  diag_times1970[i] = proc.time()[3] - diag_start + component_time
+  
+  # Repeat for the GH grid
+  diag_start = proc.time()[3]
+  GH_stuff = read.mat('s_star.mat')
+  logf_interrs_1970 = get_log_interrs(diag_1970$logf, diag_1970$T_mat, diag_1970$mode, s_star,
+                                      TRUE, diag_1970$logf_at_mode, diag_1970$log_T_det, '1970_diag_GH.mat')
+  diag_times_1970_GH[i] = proc.time()[3] - diag_start + component_time
   
   print(paste('Diagnostic replication', i, 'done for 1970 model'))
 }
 
 save.image('1970_stuff.RData')
+write.mat(list(imp_means = unlist(lapply(imp_list_1970, '[[', 'mean')),
+               imp_vars = unlist(lapply(imp_list_1970, '[[', 'var')), diag_times = diag_times1970,
+               diag_times_GH = diag_times_1970_GH,small_pvals = small_checkcon_pvals1970,
+               large_pvals = large_checkcon_pvals1970))
 
 # Get rid of all the 1970 stuff to save space
 rm(list = grep('1970', ls(), value = TRUE))
@@ -120,6 +136,7 @@ small_checkcon_pvals2005 = numeric(100)
 large_checkcon_times2005 = numeric(100)
 large_checkcon_pvals2005 = numeric(100)
 diag_times2005 = numeric(100)
+diag_times2005_GH = numeric(100)
 
 # Repetition legitimizes
 for(i in 1:100){
@@ -139,10 +156,21 @@ for(i in 1:100){
   logf_interrs_2005 = get_log_interrs(diag_2005$logf, diag_2005$T_mat, diag_2005$mode, s_star,
                                       TRUE, diag_2005$logf_at_mode, diag_2005$log_T_det, '2005_diag.mat')
   # This is somewhat inefficient, but saving the interrogation values is certainly part of
-  # the computational cost so it should be timed as well)
-  diag_times2005[i] = proc.time()[3] - diag_start + diag_2005$eig_time[3]
+  # the computational cost so it should be timed as well.
+  diag_times2005[i] = proc.time()[3] - diag_start + component_time
+  
+  # Repeat for the GH grid
+  diag_start = proc.time()[3]
+  GH_stuff = read.mat('s_star.mat')
+  logf_interrs_2005 = get_log_interrs(diag_2005$logf, diag_2005$T_mat, diag_2005$mode, s_star,
+                                      TRUE, diag_2005$logf_at_mode, diag_2005$log_T_det, '2005_diag_GH.mat')
+  diag_times_2005_GH[i] = proc.time()[3] - diag_start + component_time
   
   print(paste('Diagnostic replication', i, 'done for 2005 model'))
 }
 
 save.image('2005_stuff.RData')
+write.mat(list(imp_means = unlist(lapply(imp_list_2005, '[[', 'mean')),
+               imp_vars = unlist(lapply(imp_list_2005, '[[', 'var')), diag_times = diag_times2005,
+               diag_times_GH = diag_times_2005_GH,small_pvals = small_checkcon_pvals2005,
+               large_pvals = large_checkcon_pvals2005))

@@ -39,6 +39,8 @@ lap_diag_from_tmb = function(obj){
   # make sure obj$env$last.par == obj$env$last.par.best before calling this function
   
   theta = as.numeric(last.par[obj$env$lfixed()])
+  # theta also required for checkConsistency so we exclude that from timing
+  start = proc.time()[3] 
   mode = as.numeric(last.par[obj$env$random]) 
   
   logf_at_mode = -obj$env$f(last.par) 
@@ -51,14 +53,13 @@ lap_diag_from_tmb = function(obj){
   # Eigendecomposition of -H
   # -H has the same eigenvectors as $-H^{-1}$, and its eigenvalues are simply the inverses
   # of those of -H^{-1}
-  start = proc.time()
   eig = eigen(neg_H, symmetric = TRUE)
   T_mat = eig$vectors %*% diag(1/sqrt(eig$values))
   log_T_det = -sum(log(eig$values))/2
-  eig_time = proc.time() - start
   
+  time = proc.time()[3] - start
   return(list(d = d, mode = mode, theta = theta, logf_at_mode = logf_at_mode,
-              logf = logf, T_mat = T_mat, log_T_det = log_T_det, eig_time = eig_time))
+              logf = logf, T_mat = T_mat, log_T_det = log_T_det, time = time))
 }
 
 
@@ -206,7 +207,7 @@ imp_sampler_parallel = function(N, nu, logf, logf_at_mode, T_mat, mode, splitup 
   # mean: the actual estimate of the integral
   # var: the variance of the weights. var/N is a sensible estimate of the integral variance
   
-  start = proc.time()
+  start = proc.time()[3]
   scale_mat = sigma^2 * T_mat %*% t(T_mat)
   
   weights = numeric(0) 
@@ -219,7 +220,7 @@ imp_sampler_parallel = function(N, nu, logf, logf_at_mode, T_mat, mode, splitup 
     assign('.Random.seed', nextRNGSubStream(.Random.seed), pos = .GlobalEnv) 
     # Otherwise we get repeated weights from multiple pvec calls
   }
-  time = proc.time() - start
+  time = proc.time()[3] - start # Pretty rough estimate of timing b/c of tail checking
   
   thresh_quant = quantile(weights, thresh, na.rm = TRUE)
   
