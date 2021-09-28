@@ -84,7 +84,7 @@ for(i in 1:100){
   
   # Repeat for the GH grid
   diag_start = proc.time()[3]
-  s_star_GH = read.mat('GH_stuff.mat')$s_star
+  s_star_GH = read.mat('GH_grid.mat')$s_star
   logf_interrs_1970 = get_log_interrs(diag_1970$logf, diag_1970$T_mat, diag_1970$mode, s_star_GH,
                                       TRUE, diag_1970$logf_at_mode, diag_1970$log_T_det, '1970_diag_GH.mat')
   diag_times1970_GH[i] = proc.time()[3] - diag_start + component_time
@@ -163,10 +163,10 @@ for(i in 1:100){
   
   # Repeat for the GH grid
   diag_start = proc.time()[3]
-  s_star_GH = read.mat('GH_stuff.mat')$s_star
+  s_star_GH = read.mat('GH_grid.mat')$s_star
   logf_interrs_2005 = get_log_interrs(diag_2005$logf, diag_2005$T_mat, diag_2005$mode, s_star_GH,
                                       TRUE, diag_2005$logf_at_mode, diag_2005$log_T_det, '2005_diag_GH.mat')
-  diag_times2005_GH[i] = proc.time()[3] - diag_start + component_time + GH_stuff$time
+  diag_times2005_GH[i] = proc.time()[3] - diag_start + component_time
   
   print(paste('Diagnostic replication', i, 'done for 2005 model'))
 }
