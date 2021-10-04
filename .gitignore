@@ -1,4 +1,4 @@
-*.mat
+
 *.asv
 uqdes
 Laplace_Approximation/Charlie_work
@@ -9,9 +9,6 @@ Laplace_Approximation/Charlie_work
 .Rproj.user
 *.RData
 *fskq*
-*.RData
-*.Rdata
-*.rdata
 *.txt
 *importance_sampling.R
 *.Rhistory
