@@ -23,7 +23,7 @@ lambda_GH = 1.73;
 XS = gh_seq(2);
 us = sparse_gens(XS, d);
 Us_GH = fss_gen(us);
-s_star_GH = cell2mat(Us)';
+s_star_GH = cell2mat(Us_GH)';
 
 for i = 1:100
     tic
