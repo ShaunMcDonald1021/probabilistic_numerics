@@ -7,7 +7,7 @@ Laplace_Approximation/Charlie_work
 *.log
 *.aux
 .Rproj.user
-*.RData
+
 *fskq*
 *.txt
 *importance_sampling.R
