@@ -37,12 +37,28 @@ function [post_mean, post_var]...
 if nargin < 12
     s_star = cell2mat(Us)';
 end
-
+% logf_inter(1)
+% logf_inter(144)
 % Re-weight interrogations and subtract prior mean interrogation values
 Y = exp(d*log(gam) + logdet_T + logf_inter - log(mvnpdf(s_star/gam)))-...
     exp(d*log(2*pi*gam) + logdet_T + logf_at_mode +...
     log(mvnpdf(sqrt(gam^2-1)*s_star/gam)));
+%Y(1) = 0;
+%Y(find(Y > 1)) = 0;
+%ind = find(Y == min(Y))
+%exp(d*log(gam) + logdet_T + logf_inter(1) - log(mvnpdf(s_star(1,:)/gam)))-...
+%exp(d*log(2*pi*gam) + logdet_T + logf_at_mode +...
+%    log(mvnpdf(sqrt(gam^2-1)*s_star(1,:)/gam)))
 
+%Y(2855) = 0;
+%[~,ind] = sort(Y, 'ascend');
+%Y(ind(1:10))
+%max(Y)
+%ind(1)
+%Y = Y(ind(3:end));
+%s_star = s_star(ind(3:end),:);
+%Y = Y([1 3:144 146:end]);
+%s_star = s_star([1 3:144 146:end], :);
 % Calculate BQ weights and wce if not precomputed
 if ~is_w
     % Kernel stuff
@@ -51,7 +67,7 @@ if ~is_w
         exp(-norm(x)^2/(2*(gam^2+w_or_lambda^2)));
     Ikmean = (w_or_lambda^2/(2*gam^2 + w_or_lambda^2))^(d/2);
 
-    [Q, wce, ~] = kq_fss(Y, Us, k, kmean, Ikmean);
+    [Q, wce, ~] = kq(Y, s_star', k, kmean, Ikmean);
 else
     % This part stolen from the kq_fss.m source code in FSKQ
     Q = 0;
@@ -61,6 +77,7 @@ else
     for i = 1:J
         Ls(i) = size(Us{i}, 2);
         Q = Q + w_or_lambda(i) * sum(Y(ind+1:ind+Ls(i)));
+        %w_or_lambda(i)*sum(Y(ind+1:ind+Ls(i)))/exp(logf_at_mode + logdet_T)
         ind = ind + Ls(i);
     end
 end

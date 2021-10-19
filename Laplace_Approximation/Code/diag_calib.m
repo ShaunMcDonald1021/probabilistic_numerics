@@ -38,7 +38,7 @@ lap_app = exp(logdet_T + logf_at_mode + d*log(2*pi)/2);
 Y = exp(d*log(gam) + logdet_T + logf_inter - log(mvnpdf(s_star/gam)))-...
     exp(d*log(2*pi*gam) + logdet_T + logf_at_mode +...
     log(mvnpdf(sqrt(gam^2-1)*s_star/gam)));
-
+%Y(1) = 0;
 % Kernel stuff
 k = @(r)exp(-r.^2/(2*lambda^2));
 kmean = @(x)(lambda^2/(gam^2+lambda^2))^(d/2)*...
@@ -48,5 +48,5 @@ Ikmean = (lambda^2/(2*gam^2 + lambda^2))^(d/2);
 [Q, wce, w] = kq_fss(Y, Us, k, kmean, Ikmean);
 post_mean = Q + lap_app;
 
-alph = (Q/(1.96*wce*exp(logdet_T + logf_at_mode)))^(-2/d);
+alph = (abs(Q)/(1.96*wce*exp(logdet_T + logf_at_mode)))^(-2/d);
 
