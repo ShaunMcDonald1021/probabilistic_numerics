@@ -18,7 +18,7 @@ package_get('TMB')
 package_get('rmatio')
 package_get('mvnfast')
 
-lap_diag_from_tmb = function(obj){
+lap_diag_from_tmb = function(obj, last.par = obj$env$last.par){
   # Given a TMB object (obj), extracts all the necessary components for Laplace diagnostic
   
   # Returns:
@@ -33,7 +33,7 @@ lap_diag_from_tmb = function(obj){
   
   d = length(obj$env$random)
   
-  last.par = obj$env$last.par
+  #last.par = obj$env$last.par
   # Using last.par instead of last.par.best makes it easier to fold into model fitting
   # If you want to use the diagnostic on the fitted parameter ($\hat{\theta}$),
   # make sure obj$env$last.par == obj$env$last.par.best before calling this function
