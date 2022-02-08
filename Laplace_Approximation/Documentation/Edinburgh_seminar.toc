@@ -1,0 +1,2 @@
+\beamer@sectionintoc {1}{Motivation \& Framework}{3}{0}{1}
+\beamer@sectionintoc {2}{Probabilistic numerics/Bayesian quadrature}{14}{0}{2}

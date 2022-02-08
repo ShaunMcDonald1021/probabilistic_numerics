@@ -1,9 +1,24 @@
-function [post_mean, post_var]...
+function [post_mean, post_var, point_contribs]...
     = lap_diag(logf_inter, logf_at_mode, logdet_T, d, gam, alph,...
-    w_or_lambda, is_w, should_plot, Us, wce, s_star)
+    Us, w_or_lambda, wce, s_star, options)
 
 % Runs the LA diagnostic for a given function. Make sure you download FSKQ
 % prior to running this (see README).
+arguments
+    logf_inter double
+    logf_at_mode (1,1) double
+    logdet_T (1,1) double
+    d (1,1)
+    gam (1,1) {mustBePositive}
+    alph (1,1) {mustBePositive}
+    Us cell
+    w_or_lambda double
+    wce double
+    s_star double = cell2mat(Us)'
+    options.should_plot logical = true
+    options.is_w logical = true
+    options.is_symm logical = true
+end
 
 % INPUTS:
 % logf_inter: logs of interrogation values $\log f(\boldsymbol{s})$. Should
@@ -33,10 +48,7 @@ function [post_mean, post_var]...
 % OUTPUTS:
 % post_mean, post_var: posterior integral mean and variance, respectively
 
-% Calculate s_star if it wasn't supplied already
-if nargin < 12
-    s_star = cell2mat(Us)';
-end
+
 % logf_inter(1)
 % logf_inter(144)
 % Re-weight interrogations and subtract prior mean interrogation values
@@ -45,7 +57,7 @@ Y = exp(d*log(gam) + logdet_T + logf_inter - log(mvnpdf(s_star/gam)))-...
     log(mvnpdf(sqrt(gam^2-1)*s_star/gam)));
 %Y(1) = 0;
 %Y(find(Y > 1)) = 0;
-%ind = find(Y == min(Y))
+%find(Y == max(Y))
 %exp(d*log(gam) + logdet_T + logf_inter(1) - log(mvnpdf(s_star(1,:)/gam)))-...
 %exp(d*log(2*pi*gam) + logdet_T + logf_at_mode +...
 %    log(mvnpdf(sqrt(gam^2-1)*s_star(1,:)/gam)))
@@ -60,24 +72,29 @@ Y = exp(d*log(gam) + logdet_T + logf_inter - log(mvnpdf(s_star/gam)))-...
 %Y = Y([1 3:144 146:end]);
 %s_star = s_star([1 3:144 146:end], :);
 % Calculate BQ weights and wce if not precomputed
-if ~is_w
+if ~options.is_w
     % Kernel stuff
     k = @(r)exp(-r.^2/(2*w_or_lambda^2));
     kmean = @(x)(w_or_lambda^2/(gam^2+w_or_lambda^2))^(d/2)*...
         exp(-norm(x)^2/(2*(gam^2+w_or_lambda^2)));
     Ikmean = (w_or_lambda^2/(2*gam^2 + w_or_lambda^2))^(d/2);
 
-    [Q, wce, ~] = kq(Y, s_star', k, kmean, Ikmean);
+    if options.is_symm
+        [Q, wce, ~] = kq_fss(Y, Us, k, kmean, Ikmean);
+    else
+        [Q, wce, ~] = kq(Y, s_star', k, kmean, Ikmean);
+    end
 else
     % This part stolen from the kq_fss.m source code in FSKQ
     Q = 0;
     J = length(w_or_lambda);
     Ls = zeros(J,1);
+    point_contribs = zeros(J, 1);
     ind = 0;
     for i = 1:J
         Ls(i) = size(Us{i}, 2);
         Q = Q + w_or_lambda(i) * sum(Y(ind+1:ind+Ls(i)));
-        %w_or_lambda(i)*sum(Y(ind+1:ind+Ls(i)))/exp(logf_at_mode + logdet_T)
+        point_contribs(i) = w_or_lambda(i)*sum(Y(ind+1:ind+Ls(i)));
         ind = ind + Ls(i);
     end
 end
@@ -87,21 +104,26 @@ post_mean = Q + lap_app;
 post_var = wce^2*exp(2*(logf_at_mode + logdet_T) - d*log(alph));
 
 % Plot
-if should_plot
+if options.should_plot
     lower_bound = min([norminv(0.025, post_mean, sqrt(post_var)) lap_app]);
     upper_bound = max([norminv(0.975, post_mean, sqrt(post_var)) lap_app]);
     lap_dist = fplot(@(x) normpdf(x, post_mean, sqrt(post_var)),...
         [lower_bound - 0.35*(upper_bound - lower_bound) upper_bound+...
         0.35*(upper_bound - lower_bound)], '-k','LineWidth', 1.5);
+    set(gca, 'FontSize', 18)
+    set(gca, 'TickLabelInterpreter', 'latex')
     hold on
-    lap_line = xline(lap_app, '--b', 'LineWidth', 1.25);
+    lap_line = xline(lap_app, '--b', 'LineWidth', 1.75);
     quant_line = xline(norminv(0.025, post_mean, sqrt(post_var)), ':k',...
-        'LineWidth', 1.35);
+        'LineWidth', 1.5);
     quant_line = xline(norminv(0.975, post_mean, sqrt(post_var)), ':k',...
-        'LineWidth', 1.35);
+        'LineWidth', 1.5);
     legend([lap_dist, quant_line, lap_line],...
-        {'Integral posterior', '95% interval',...
-        'Laplace approximation'}, 'Location', 'southoutside');
+        {'Integral posterior', '95\% interval',...
+        'Laplace approximation'},...
+        'interpreter', 'latex', 'FontSize', 18);
+    title('Posterior of $F$, $\mathcal{N}\left(m_1, C_1\right)$', ...
+        'Interpreter', 'latex', 'FontSize', 22);
     hold off
 end
 

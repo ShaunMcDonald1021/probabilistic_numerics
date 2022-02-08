@@ -9,7 +9,7 @@ tau = @(r) mvtpdf([r(:) zeros([max(size(r)) d-1])], eye(d), v);
 gauss_approx = @(r) exp(gammaln((v+d)/2) - gammaln(v/2) - d*log(v*pi)/2-...
    (v+d)*r.^2./(2*v));
 
-fig = tiledlayout(2, 1, 'TileSpacing', 'none');
+fig = tiledlayout(2, 1, 'TileSpacing', 'Tight');
 hsub1 = nexttile;
 hold on
 tline = fplot(hsub1, pT, [0 12], 'LineWidth', 1.75);
