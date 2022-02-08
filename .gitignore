@@ -13,3 +13,6 @@ Laplace_Approximation/Charlie_work
 *.txt
 *importance_sampling.R
 *.Rhistory
+*.out
+*.snm
+*.nav
