@@ -16,3 +16,7 @@ Laplace_Approximation/Charlie_work
 *.out
 *.snm
 *.nav
+*.bbl
+*.fig
+*.bib
+*.blg
