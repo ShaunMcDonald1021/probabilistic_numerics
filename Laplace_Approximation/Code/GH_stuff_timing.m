@@ -10,8 +10,9 @@ d = 72;
 for i = 1:100
     tic
     XS = gh_seq(2);
-    us = sparse_gens(XS, d);
+    us = 3.6*sparse_gens(XS, d);
     Us = fss_gen(us);
+    Us = Us(2:end);
     s_star = cell2mat(Us);
     save('GH_grid.mat', 's_star')
     GH_times(i) = toc;

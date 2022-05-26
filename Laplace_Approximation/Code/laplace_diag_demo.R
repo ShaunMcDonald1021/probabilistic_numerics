@@ -23,9 +23,9 @@ param1970 = defpar(dat1970, conf1970)
 fit_1970 = sam.fit(dat1970, conf1970, param1970, newtonsteps = 0, sim.condRE = FALSE, silent = TRUE,
                    inner.control = list(tol = 1e-10, tol10 = 1e-6, maxit = 5000))$obj
 # Ensure last.par == last.par.best
-fit_1970$fn(fit_1970$env$last.par.best[fit_1970$env$lfixed()])
+#fit_1970$fn(fit_1970$env$last.par.best[fit_1970$env$lfixed()])
 
-diag_1970 = lap_diag_from_tmb(fit_1970)
+diag_1970 = lap_diag_from_tmb(fit_1970, fit_1970$env$last.par.best)
 d = diag_1970$d
 
 # Clear up some memory
@@ -71,7 +71,7 @@ for(i in 1:100){
   
   # Recalculate diagnostic components for more accurate estimates of
   # variability in computation time
-  component_time = lap_diag_from_tmb(fit_1970)$time
+  component_time = lap_diag_from_tmb(fit_1970, fit_1970$env$last.par.best)$time
   
   diag_start = proc.time()[3]
   s_star = cbind(numeric(d), diag(sqrt(d), d), diag(-sqrt(d), d))
@@ -111,9 +111,9 @@ param2005 = defpar(dat2005, conf2005)
 fit_2005 = sam.fit(dat2005, conf2005, param2005, newtonsteps = 0, sim.condRE = FALSE, silent = TRUE,
                    inner.control = list(tol = 1e-10, tol10 = 1e-6, maxit = 5000))$obj
 # Ensure last.par == last.par.best
-fit_2005$fn(fit_2005$env$last.par.best[fit_2005$env$lfixed()])
+#fit_2005$fn(fit_2005$env$last.par.best[fit_2005$env$lfixed()])
 
-diag_2005 = lap_diag_from_tmb(fit_2005)
+diag_2005 = lap_diag_from_tmb(fit_2005, fit_2005$env$last.par.best)
 
 # Clear up some memory
 rm(dat2005, conf2005, param2005)
@@ -151,7 +151,7 @@ for(i in 1:100){
   large_checkcon_pvals2005[i] = summary(large_checkcon)$marginal$p.value
   large_checkcon_times2005[i] = proc.time()[3] - large_start
   
-  component_time = lap_diag_from_tmb(fit_2005)$time
+  component_time = lap_diag_from_tmb(fit_2005, fit_2005$env$last.par.best)$time
   diag_start = proc.time()[3]
   s_star = cbind(numeric(d), diag(sqrt(d), d), diag(-sqrt(d), d))
   s_star[,2:(d+1)] = s_star[,(d+1):2]
@@ -176,3 +176,5 @@ write.mat(list(imp_means = unlist(lapply(imp_list_2005, '[[', 'mean')),
                imp_vars = unlist(lapply(imp_list_2005, '[[', 'var')), diag_times2005 = diag_times2005,
                diag_times2005_GH = diag_times2005_GH, small_pvals = small_checkcon_pvals2005,
                large_pvals = large_checkcon_pvals2005), filename = '2005_demo_stuff.mat')
+
+print(warnings())

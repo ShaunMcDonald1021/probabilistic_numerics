@@ -16,13 +16,14 @@ d = 72;
 v = 25921;
 gam = sqrt(1.5*(v+d)/(v+d-3));
 lambda = 3.7;
-lambda_GH = 1.73;
+lambda_GH = 2.06;
 
 % No need to time this part, since it was already timed in
 % GH_stuff_timing.m
 XS = gh_seq(2);
-us = sparse_gens(XS, d);
+us = 3.6*sparse_gens(XS, d);
 Us_GH = fss_gen(us);
+Us_GH = Us_GH(2:end);
 s_star_GH = cell2mat(Us_GH)';
 
 for i = 1:100

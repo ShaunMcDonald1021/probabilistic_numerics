@@ -18,7 +18,7 @@ package_get('TMB')
 package_get('rmatio')
 package_get('mvnfast')
 
-lap_diag_from_tmb = function(obj){
+lap_diag_from_tmb = function(obj, last.par = obj$env$last.par){
   # Given a TMB object (obj), extracts all the necessary components for Laplace diagnostic
   
   # Returns:
@@ -33,7 +33,7 @@ lap_diag_from_tmb = function(obj){
   
   d = length(obj$env$random)
   
-  last.par = obj$env$last.par
+  #last.par = obj$env$last.par
   # Using last.par instead of last.par.best makes it easier to fold into model fitting
   # If you want to use the diagnostic on the fitted parameter ($\hat{\theta}$),
   # make sure obj$env$last.par == obj$env$last.par.best before calling this function
@@ -268,4 +268,28 @@ imp_score_test = function(weights, thresh){
                                   parscale = 0.0001, pgtol = 0), lower = 1e-18)$par
   score_stat = xi_score(0.5, beta_hat, Z)/sqrt(2*length(Z))
   return(list(score_stat = score_stat, beta_hat = beta_hat))
+}
+
+
+gauss_dir_check = function(vec, logf, logf_at_mode, T_mat, mode, left, right){
+  norm_vec = vec/sqrt(sum(vec^2))
+  #out_cent = solve(T_mat, vec - mode)
+  #out_norm = sqrt(sum(out_cent^2))
+  #out_dir = out_cent/out_norm # Unit vector in the direction of out_cent
+  # Scale and rotate out_dir by T_mat (see Sec. 4.1 of manuscript)
+  out_vec = as.numeric(T_mat %*% norm_vec)
+  
+  #H = 
+  
+  eval_grid = seq(left, right, by = 0.05)
+  fpoints = numeric(length(eval_grid))
+  gausspoints = numeric(length(eval_grid))
+  for(i in seq_along(eval_grid)){
+    fpoints[i] = logf(mode + eval_grid[i]*out_vec) - logf_at_mode
+    gausspoints[i] = -eval_grid[i]^2/2
+  }
+  #print(unique(gausspoints))
+  #print(fpoints)
+  plot(eval_grid, fpoints, type = 'l', lwd = 2)
+  lines(eval_grid, gausspoints, col = 'red')
 }
