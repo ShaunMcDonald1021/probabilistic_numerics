@@ -5,15 +5,22 @@ function [post_mean, w, wce, alph] =...
 % density as the test function. Make sure you download FSKQ prior to
 % running this (see README).
 
-% INPUTS:
-% gam, lambda: values of hyperparameters $\gamma$ and $\lambda$, resp.
-% d: dimensionality
-% v: degrees of freedom for multivariate T density
-% Us: The preliminary grid as a cellular array. Will usually be obtained by
-% running fss_gen (from FSKQ) on a matrix of generator vectors (see demo.m
-% in FSKQ).
-% s_star: the preliminary grid in the form of an n*d matrix. Not necessary,
-% but it'll save time if you precomputed it
+arguments
+    % Hyperparameters gamma and lambda (see Section 4.5 of manuscript)
+    gam (1,1) {mustBePositive}
+    lambda (1,1) {mustBePositive}
+    % Dimensionality of domain
+    d (1,1) {mustBePositive, mustBeInteger}
+    % Degrees of freedom for calibration function
+    v (1,1) {mustBePositive}
+    % The preliminary interrogation grid as a cellular array. Will
+    % usually be obtained by running fss_gen (from FSKQ) on a matrix of
+    % generator vectors (see demo.m in FSKQ)
+    Us cell
+    % Preliminary grid in the form of n*d array. Not necessary, but
+    % saves time if precomputed
+    s_star double = cell2mat(Us)' 
+end
 
 % OUTPUTS:
 % post_mean: posterior integral mean for diagnostic applied to test fn
@@ -24,11 +31,6 @@ function [post_mean, w, wce, alph] =...
 % alph: the precision hyperparameter, calculated to put the test fn on the
 % boundary of rejection
 
-% Calculate s_star if it wasn't supplied already
-if nargin == 5
-    s_star = cell2mat(Us)';
-end
-
 logf_inter = log(mvtpdf(s_star.*sqrt(v/(v+d)), eye(d), v));
 logf_at_mode = (gammaln((v+d)/2) - gammaln(v/2) - d*log(v*pi)/2);
 logdet_T = d*log(v/(v+d))/2;
@@ -38,7 +40,7 @@ lap_app = exp(logdet_T + logf_at_mode + d*log(2*pi)/2);
 Y = exp(d*log(gam) + logdet_T + logf_inter - log(mvnpdf(s_star/gam)))-...
     exp(d*log(2*pi*gam) + logdet_T + logf_at_mode +...
     log(mvnpdf(sqrt(gam^2-1)*s_star/gam)));
-%Y(1) = 0;
+
 % Kernel stuff
 k = @(r)exp(-r.^2/(2*lambda^2));
 kmean = @(x)(lambda^2/(gam^2+lambda^2))^(d/2)*...
@@ -49,4 +51,3 @@ Ikmean = (lambda^2/(2*gam^2 + lambda^2))^(d/2);
 post_mean = Q + lap_app;
 
 alph = (abs(Q)/(1.96*wce*exp(logdet_T + logf_at_mode)))^(-2/d);
-
