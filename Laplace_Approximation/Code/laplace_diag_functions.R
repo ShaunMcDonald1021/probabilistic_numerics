@@ -73,7 +73,6 @@ get_log_interrs = function(logf, T_mat, mode, s_star, write_mat = FALSE,
   # write_mat: If TRUE, writes everything required for the diagnostic to a .mat file
   # logf_at_mode & log_T_det, are as in lap_diag_from_tmb and are only required
   # filename: a character string for the name of the .mat file to write. Only required
-  # when write_mat = TRUE
   # if write_mat = TRUE
   s = sweep(T_mat %*% s_star, 1, mode, '+')
   logf_interrs = apply(s, 2, logf)
