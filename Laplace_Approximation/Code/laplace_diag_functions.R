@@ -20,6 +20,9 @@ package_get('mvnfast')
 
 lap_diag_from_tmb = function(obj, last.par = obj$env$last.par){
   # Given a TMB object (obj), extracts all the necessary components for Laplace diagnostic
+  # Using last.par instead of last.par.best makes it easier to fold into model fitting
+  # If you want to use the diagnostic on the fitted parameter ($\hat{\theta}$),
+  # make sure obj$env$last.par == obj$env$last.par.best before calling this function
   
   # Returns:
   # d: dimensionality of x
@@ -32,11 +35,6 @@ lap_diag_from_tmb = function(obj, last.par = obj$env$last.par){
   # eig_time: time (in seconds) taken for eigendecomposition of Hessian
   
   d = length(obj$env$random)
-  
-  #last.par = obj$env$last.par
-  # Using last.par instead of last.par.best makes it easier to fold into model fitting
-  # If you want to use the diagnostic on the fitted parameter ($\hat{\theta}$),
-  # make sure obj$env$last.par == obj$env$last.par.best before calling this function
   
   theta = as.numeric(last.par[obj$env$lfixed()])
   # theta also required for checkConsistency so we exclude that from timing
@@ -229,7 +227,7 @@ imp_sampler_parallel = function(N, nu, logf, logf_at_mode, T_mat, mode, splitup 
               var = var(weights, na.rm = TRUE)))
 }
 
-
+# Helper functions for imp_score_test (see below)
 loglik = function(xi, beta, Z){
   # log-likelihood of a sample Z from a generalized Pareto distribution with
   # shape parameter xi and scale parameter beta
@@ -252,6 +250,7 @@ beta_score = function(xi, beta, Z){
 imp_score_test = function(weights, thresh){
   # The score test from Jan Koopman et al. (2009) to test if an IS has finite variance
   # Assumes the excesses of the weights follow a GPD, then tests $\xi \leq 0.5$
+  
   # weights: vector of (largest) weights from an importance sampler
   # thresh: The threshold to use in modelling the tail of the weight distribution
   # Must have thresh >= min(weights)
@@ -272,14 +271,20 @@ imp_score_test = function(weights, thresh){
 
 
 gauss_dir_check = function(vec, logf, logf_at_mode, T_mat, mode, left, right){
-  norm_vec = vec/sqrt(sum(vec^2))
-  #out_cent = solve(T_mat, vec - mode)
-  #out_norm = sqrt(sum(out_cent^2))
-  #out_dir = out_cent/out_norm # Unit vector in the direction of out_cent
-  # Scale and rotate out_dir by T_mat (see Sec. 4.1 of manuscript)
-  out_vec = as.numeric(T_mat %*% norm_vec)
+  # Plot a function and its Gaussian approximation on the log scale in a
+  # specified direction. Serves as a "spot check" on shape behaviour
   
-  #H = 
+  # vec: The direction along which we want to check. Note that this is on
+  # "preliminary" scale (i.e. if vec is a unit vector, it corresponds to
+  # checking shape along "principal axis" of f. See Sec. 4.1 of manuscript)
+  # logf, logf_at_mode, T_mat, mode: same as above
+  # left, right: endpoints for sequence along which we want to plot
+  # (again, on "preliminary" scale)
+  
+  # Unit vector in direction of vec
+  norm_vec = vec/sqrt(sum(vec^2))
+  # Scale and rotate norm_vec by T_mat (see Sec. 4.1 of manuscript)
+  out_vec = as.numeric(T_mat %*% norm_vec)
   
   eval_grid = seq(left, right, by = 0.05)
   fpoints = numeric(length(eval_grid))
@@ -288,8 +293,7 @@ gauss_dir_check = function(vec, logf, logf_at_mode, T_mat, mode, left, right){
     fpoints[i] = logf(mode + eval_grid[i]*out_vec) - logf_at_mode
     gausspoints[i] = -eval_grid[i]^2/2
   }
-  #print(unique(gausspoints))
-  #print(fpoints)
+
   plot(eval_grid, fpoints, type = 'l', lwd = 2)
   lines(eval_grid, gausspoints, col = 'red')
 }

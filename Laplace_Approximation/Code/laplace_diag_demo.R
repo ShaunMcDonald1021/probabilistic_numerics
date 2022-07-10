@@ -2,7 +2,7 @@
 # NOTE: this demo is designed for Unix systems. The importance sampler uses forking
 # and WILL NOT WORK IN WINDOWS unless you manually change the number of cores to 1.
 # Make sure GH_stuff_timing.mat has been ran before running this
-
+library(mgcv)
 # Assuming you run this demo from the same location where laplace_diag_functions.R is.
 # If not, change the below line accordingly
 source('laplace_diag_functions.R')
